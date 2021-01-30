@@ -57,16 +57,22 @@ void CASyllable::clear()
 	Clone the syllable using the given new context.
 	If the given context is not a lyrics context, 0 is used instead.
 */
-CASyllable* CASyllable::clone(CAContext* context)
+std::shared_ptr<CAMusElement> CASyllable::cloneRealElement(CAContext* context)
 {
-    CALyricsContext* newContext = nullptr;
-    if (context->contextType() == CAContext::LyricsContext)
-        newContext = static_cast<CALyricsContext*>(context);
-    CASyllable* s = new CASyllable(text(), hyphenStart(), melismaStart(), newContext, timeStart(), timeLength(), associatedVoice());
+    return cloneSyllable(static_cast<CALyricsContext*>(context));
+}
+
+std::shared_ptr<CASyllable> CASyllable::cloneSyllable(CALyricsContext *context)
+{
+    std::shared_ptr<CALyricsContext> newContext;
+    if (context->contextType() == CAContext::LyricsContext) {
+        newContext = std::make_shared<CALyricsContext>(context->name(), context->stanzaNumber(), context->sheet());
+    }
+    std::shared_ptr<CASyllable> s = std::make_shared<CASyllable>(text(), hyphenStart(), melismaStart(), newContext.get(), timeStart(), timeLength(), associatedVoice());
 
     for (int i = 0; i < markList().size(); i++) {
-        CAMark* m = static_cast<CAMark*>(markList()[i]->clone(s));
-        s->addMark(m);
+        auto m = (markList()[i]->cloneMark(s.get()));
+        s->addMark(m.get());
     }
 
     return s;

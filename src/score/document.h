@@ -73,8 +73,12 @@ public:
     void setModified(bool m) { _modified = m; }
     void setArchive(CAArchive* a) { _archive = a; }
 
+protected:
+    void addSheetShared(std::shared_ptr<CASheet> sheet);
+
 private:
     QList<CASheet*> _sheetList;
+    QList<std::shared_ptr<CASheet> > _sheetListShared;
     QList<std::shared_ptr<CAResource> > _resourceList;
 
     QString _title;

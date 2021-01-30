@@ -26,9 +26,9 @@ CATempo::~CATempo()
 {
 }
 
-CATempo* CATempo::clone(CAMusElement* elt)
+std::shared_ptr<CATempo> CATempo::cloneTempo(CAMusElement* elt)
 {
-    return new CATempo(beat(), bpm(), elt);
+    return std::make_shared<CATempo>(beat(), bpm(), elt);
 }
 
 int CATempo::compare(CAMusElement* elt)

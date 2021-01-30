@@ -39,8 +39,9 @@ public:
     CASlur(CASlurType, CASlurDirection, CAContext* c, CANote* noteStart, CANote* noteEnd = nullptr, CASlurStyle style = SlurSolid);
     virtual ~CASlur();
 
-    CASlur* clone(CAContext* context = nullptr);
-    CASlur* clone(CAContext* context, CANote* noteStart, CANote* noteEnd);
+    std::shared_ptr<CAMusElement> cloneRealElement(CAContext* context = nullptr);
+    std::shared_ptr<CASlur> cloneSlur(CAContext* context = nullptr);
+    std::shared_ptr<CASlur> cloneSlur(CAContext* context, CANote* noteStart, CANote* noteEnd);
     int compare(CAMusElement* elt);
 
     inline CASlurDirection slurDirection() { return _slurDirection; }

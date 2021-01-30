@@ -44,7 +44,8 @@ public:
 
     CAClef(CAPredefinedClefType type, CAStaff* staff, int time, int offsetInterval = 0);
     CAClef(CAClefType type, int c1, CAStaff* staff, int time, int offset = 0);
-    CAClef* clone(CAContext* context = nullptr);
+    std::shared_ptr<CAMusElement> cloneRealElement(CAContext* context = nullptr);
+    std::shared_ptr<CAClef> cloneClef(CAContext* context = nullptr);
     CAStaff* staff() { return static_cast<CAStaff*>(context()); }
 
     void setPredefinedType(CAPredefinedClefType type);

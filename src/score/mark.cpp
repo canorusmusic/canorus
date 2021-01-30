@@ -122,9 +122,9 @@ CAMark::~CAMark()
     }
 }
 
-CAMark* CAMark::clone(CAMusElement* elt)
+std::shared_ptr<CAMark> CAMark::cloneMark(CAMusElement* elt)
 {
-    return new CAMark(markType(), elt, timeStart(), timeLength());
+    return std::make_shared<CAMark>(markType(), elt, timeStart(), timeLength());
 }
 
 int CAMark::compare(CAMusElement* elt)

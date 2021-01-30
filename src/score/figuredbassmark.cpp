@@ -76,13 +76,18 @@ void CAFiguredBassMark::insertNumber(int number)
     }
 }
 
-CAMusElement* CAFiguredBassMark::clone(CAContext* context)
+std::shared_ptr<CAMusElement> CAFiguredBassMark::cloneRealElement(CAContext* context)
+{
+    return cloneFBM();
+}
+
+std::shared_ptr<CAFiguredBassMark> CAFiguredBassMark::cloneFBM(CAContext *context)
 {
     if (context && context->contextType() != CAContext::FiguredBassContext) {
-        return nullptr;
+        return std::shared_ptr<CAFiguredBassMark>();
     }
 
-    CAFiguredBassMark* fbm = new CAFiguredBassMark(static_cast<CAFiguredBassContext*>(context), timeStart(), timeLength());
+    std::shared_ptr<CAFiguredBassMark> fbm = std::make_shared<CAFiguredBassMark>(static_cast<CAFiguredBassContext*>(context), timeStart(), timeLength());
     for (int i = 0; i < _numbers.size(); i++) {
         if (_accs.contains(_numbers[i])) {
             fbm->addNumber(_numbers[i], _accs[_numbers[i]]);

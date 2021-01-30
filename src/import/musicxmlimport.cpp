@@ -636,19 +636,19 @@ CAVoice* CAMusicXmlImport::addVoiceIfNeeded(QString partId, int staff, int voice
             if (_partMapClef[partId].contains(staff)) {
                 v->append(_partMapClef[partId][staff]);
             } else if (_partMapClef[partId].contains(1)) { // add the default clef
-                v->append(_partMapClef[partId][1]->clone(s));
+                v->append(_partMapClef[partId][1]->cloneClef(s).get());
             }
 
             if (_partMapKeySig[partId].contains(staff)) {
                 v->append(_partMapKeySig[partId][staff]);
             } else if (_partMapKeySig[partId].contains(1)) { // add the default keysig
-                v->append(_partMapKeySig[partId][1]->clone(s));
+                v->append(_partMapKeySig[partId][1]->cloneKeySignature(s).get());
             }
 
             if (_partMapTimeSig[partId].contains(staff)) {
                 v->append(_partMapTimeSig[partId][staff]);
             } else if (_partMapTimeSig[partId].contains(1)) { // add the default timesig
-                v->append(_partMapTimeSig[partId][1]->clone(s));
+                v->append(_partMapTimeSig[partId][1]->cloneTimeSignature(s).get());
             }
         }
 

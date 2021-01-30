@@ -33,12 +33,12 @@ CAFermata::~CAFermata()
 {
 }
 
-CAFermata* CAFermata::clone(CAMusElement* elt)
+std::shared_ptr<CAFermata> CAFermata::cloneFermata(CAMusElement* elt)
 {
     if (elt->isPlayable()) {
-        return new CAFermata(static_cast<CAPlayable*>(elt), fermataType());
+        return std::make_shared<CAFermata>(static_cast<CAPlayable*>(elt), fermataType());
     } else {
-        return new CAFermata((elt->musElementType() == Barline) ? static_cast<CABarline*>(elt) : nullptr, fermataType());
+        return std::make_shared<CAFermata>((elt->musElementType() == Barline) ? static_cast<CABarline*>(elt) : nullptr, fermataType());
     }
 }
 

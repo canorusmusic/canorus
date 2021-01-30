@@ -18,7 +18,8 @@ public:
     CAChordNameContext(QString name, CASheet* sheet);
     ~CAChordNameContext();
 
-    CAContext* clone(CASheet*);
+    std::shared_ptr<CAContext> cloneRealContext(CASheet*);
+    std::shared_ptr<CAChordNameContext> cloneChordNameContext(CASheet*);
     void clear();
     CAMusElement* next(CAMusElement* elt);
     CAMusElement* previous(CAMusElement* elt);

@@ -40,9 +40,9 @@ CAFingering::~CAFingering()
 {
 }
 
-CAFingering* CAFingering::clone(CAMusElement* elt)
+std::shared_ptr<CAFingering> CAFingering::cloneFingering(CAMusElement* elt)
 {
-    return new CAFingering(fingerList(), (elt->musElementType() == CAMusElement::Note) ? static_cast<CANote*>(elt) : nullptr, isOriginal());
+    return std::make_shared<CAFingering>(fingerList(), (elt->musElementType() == CAMusElement::Note) ? static_cast<CANote*>(elt) : nullptr, isOriginal());
 }
 
 int CAFingering::compare(CAMusElement* elt)

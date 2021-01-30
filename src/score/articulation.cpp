@@ -28,9 +28,9 @@ CAArticulation::~CAArticulation()
 {
 }
 
-CAArticulation* CAArticulation::clone(CAMusElement* elt)
+std::shared_ptr<CAArticulation> CAArticulation::cloneArticulation(CAMusElement* elt)
 {
-    return new CAArticulation(articulationType(), (elt->musElementType() == CAMusElement::Note) ? static_cast<CANote*>(elt) : nullptr);
+    return std::make_shared<CAArticulation>(articulationType(), (elt->musElementType() == CAMusElement::Note) ? static_cast<CANote*>(elt) : nullptr);
 }
 
 int CAArticulation::compare(CAMusElement*)

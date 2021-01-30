@@ -56,17 +56,22 @@ CALyricsContext::~CALyricsContext()
 void CALyricsContext::clear()
 {
     while (!_syllableList.isEmpty())
-        delete _syllableList.takeFirst();
+        _syllableList.takeFirst();
 }
 
-CALyricsContext* CALyricsContext::clone(CASheet* s)
+std::shared_ptr<CAContext> CALyricsContext::cloneRealContext(CASheet* s)
 {
-    CALyricsContext* newLc = new CALyricsContext(name(), stanzaNumber(), s);
+    return cloneLyricsContext(s);
+}
+
+std::shared_ptr<CALyricsContext> CALyricsContext::cloneLyricsContext(CASheet *s)
+{
+    std::shared_ptr<CALyricsContext> newLc = std::make_shared<CALyricsContext>(name(), stanzaNumber(), s);
     newLc->cloneLyricsContextProperties(this);
 
     for (int i = 0; i < _syllableList.size(); i++) {
-        CASyllable* newSyllable = static_cast<CASyllable*>(_syllableList[i]->clone(newLc));
-        newLc->addSyllable(newSyllable);
+        auto newSyllable = (_syllableList[i]->cloneSyllable(newLc.get()));
+        newLc->addSyllable(newSyllable.get());
     }
     return newLc;
 }
@@ -112,7 +117,7 @@ void CALyricsContext::repositSyllables()
         }
         // remove empty "leftover" syllables from the end
         for (j = firstEmpty; j < _syllableList.size() && j > 0; j++) {
-            delete _syllableList.takeAt(j);
+            _syllableList.takeAt(j);
         }
 
         for (; i < noteList.size(); i++) { // add empty syllables at the end, if missing
@@ -158,9 +163,6 @@ bool CALyricsContext::remove(CAMusElement* elt)
     bool success = false;
     success = _syllableList.removeAll(static_cast<CASyllable*>(elt));
 
-    if (success)
-        delete elt;
-
     return success;
 }
 
@@ -182,7 +184,7 @@ CASyllable* CALyricsContext::removeSyllableAtTimeStart(int timeStart)
         for (int j = i + 1; j < _syllableList.size(); j++)
             _syllableList[j]->setTimeStart(_syllableList[j]->timeStart() - syllable->timeLength());
 
-        delete _syllableList.takeAt(i);
+        _syllableList.takeAt(i);
         return syllable;
     } else {
         return nullptr;
@@ -204,7 +206,7 @@ bool CALyricsContext::addSyllable(CASyllable* syllable, bool replace)
         ;
     //int s = _syllableList.size();
     if (i < _syllableList.size() && replace) {
-        delete _syllableList.takeAt(i);
+        _syllableList.takeAt(i);
     }
     _syllableList.insert(i, syllable);
     for (i++; i < _syllableList.size(); i++)
@@ -223,7 +225,8 @@ bool CALyricsContext::addEmptySyllable(int timeStart, int timeLength)
     int i;
     for (i = 0; i < _syllableList.size() && _syllableList[i]->timeStart() < timeStart; i++)
         ;
-    _syllableList.insert(i, (new CASyllable("", ((i > 0) ? (_syllableList[i - 1]->hyphenStart()) : (false)), ((i > 0) ? (_syllableList[i - 1]->melismaStart()) : (false)), this, timeStart, timeLength)));
+    auto newSyllable = std::make_shared<CASyllable>("", ((i > 0) ? (_syllableList[i - 1]->hyphenStart()) : (false)), ((i > 0) ? (_syllableList[i - 1]->melismaStart()) : (false)), this, timeStart, timeLength);
+    _syllableList.insert(i, newSyllable.get());
     for (i++; i < _syllableList.size(); i++)
         _syllableList[i]->setTimeStart(_syllableList[i]->timeStart() + timeLength);
 

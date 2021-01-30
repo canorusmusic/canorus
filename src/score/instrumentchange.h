@@ -18,7 +18,7 @@ public:
     CAInstrumentChange(int instrument, CANote* note);
     virtual ~CAInstrumentChange();
 
-    CAInstrumentChange* clone(CAMusElement* elt = nullptr);
+    std::shared_ptr<CAInstrumentChange> cloneInstrumentChange(CAMusElement* elt = nullptr);
     int compare(CAMusElement*);
 
     inline int instrument() { return _instrument; }

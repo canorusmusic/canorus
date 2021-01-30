@@ -29,7 +29,8 @@ public:
     CABarline(CABarlineType type, CAStaff* staff, int startTime);
     virtual ~CABarline();
 
-    CABarline* clone(CAContext* context = 0);
+    std::shared_ptr<CAMusElement> cloneRealElement(CAContext* context = 0);
+    std::shared_ptr<CABarline> cloneBarline(CAContext* context = 0);
     int compare(CAMusElement* elt);
 
     CABarlineType barlineType() { return _barlineType; }

@@ -18,7 +18,8 @@ public:
     CAFiguredBassContext(QString name, CASheet* sheet);
     ~CAFiguredBassContext();
 
-    CAContext* clone(CASheet*);
+    std::shared_ptr<CAContext> cloneRealContext(CASheet*);
+    std::shared_ptr<CAFiguredBassContext> cloneFBC(CASheet*);
     void clear();
     CAMusElement* next(CAMusElement* elt);
     CAMusElement* previous(CAMusElement* elt);
@@ -33,6 +34,7 @@ public:
 
 private:
     QList<CAFiguredBassMark*> _figuredBassMarkList;
+    QList<std::shared_ptr<CAFiguredBassMark> > _figuredBassMarkListShared;
 };
 
 #endif /* FIGUREDBASSCONTEXT_H_ */

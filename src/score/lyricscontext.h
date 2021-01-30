@@ -21,7 +21,8 @@ public:
     CALyricsContext(const QString name, int stanzaNumber, CAVoice* v);
     CALyricsContext(const QString name, int stanzaNumber, CASheet* s);
     ~CALyricsContext();
-    CALyricsContext* clone(CASheet* s);
+    std::shared_ptr<CAContext> cloneRealContext(CASheet*);
+    std::shared_ptr<CALyricsContext> cloneLyricsContext(CASheet* s);
     void cloneLyricsContextProperties(CALyricsContext*);
 
     void repositSyllables();

@@ -47,7 +47,7 @@ public:
     CAArticulation(CAArticulationType t, CANote* n);
     virtual ~CAArticulation();
 
-    CAArticulation* clone(CAMusElement* elt);
+    std::shared_ptr<CAArticulation> cloneArticulation(CAMusElement* elt);
     int compare(CAMusElement* elt);
 
     inline CANote* associatedNote() { return static_cast<CANote*>(associatedElement()); }

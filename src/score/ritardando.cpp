@@ -31,9 +31,9 @@ CARitardando::~CARitardando()
 {
 }
 
-CARitardando* CARitardando::clone(CAMusElement* elt)
+std::shared_ptr<CARitardando> CARitardando::cloneRitardando(CAMusElement* elt)
 {
-    return new CARitardando(finalTempo(), (elt->isPlayable()) ? static_cast<CAPlayable*>(elt) : nullptr, timeLength(), ritardandoType());
+    return std::make_shared<CARitardando>(finalTempo(), (elt->isPlayable()) ? static_cast<CAPlayable*>(elt) : nullptr, timeLength(), ritardandoType());
 }
 
 int CARitardando::compare(CAMusElement* elt)

@@ -20,7 +20,9 @@ class CAFunctionMarkContext : public CAContext {
 public:
     CAFunctionMarkContext(const QString name, CASheet* sheet);
     ~CAFunctionMarkContext();
-    CAFunctionMarkContext* clone(CASheet* s);
+
+    std::shared_ptr<CAContext> cloneRealContext(CASheet*);
+    std::shared_ptr<CAFunctionMarkContext> cloneFMC(CASheet* s);
 
     inline const QList<CAFunctionMark*>& functionMarkList() { return _functionMarkList; }
     QList<CAFunctionMark*> functionMarkAt(int timeStart);

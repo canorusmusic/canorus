@@ -22,13 +22,13 @@ public:
 
     inline CAPlayableLength& playableLength() { return _playableLength; }
     inline void setPlayableLength(CAPlayableLength& l) { _playableLength = l; }
-    virtual CAPlayable* clone(CAContext* context)
+    virtual std::shared_ptr<CAMusElement> cloneRealElement(CAContext* context)
     {
-        CAPlayable* pl = clone();
+        std::shared_ptr<CAPlayable> pl = clonePlayable();
         pl->setContext(context);
         return pl;
     }
-    virtual CAPlayable* clone(CAVoice* voice = nullptr) = 0;
+    virtual std::shared_ptr<CAPlayable> clonePlayable(CAVoice* voice = nullptr) = 0;
 
     CATuplet* tuplet() { return _tuplet; }
     void setTuplet(CATuplet* t) { _tuplet = t; }

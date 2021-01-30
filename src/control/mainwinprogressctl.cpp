@@ -60,13 +60,13 @@ void CAMainWinProgressCtl::startProgress(CAFile &f)
         _updateTimer.reset();
     }
 
-    _updateTimer = std::make_unique<QTimer>(new QTimer());
+    _updateTimer = std::make_unique<QTimer>();
     _updateTimer->setInterval(150);
     _updateTimer->setSingleShot(false);
 
     connect(_updateTimer.get(), SIGNAL(timeout()), this, SLOT(on_updateTimer_timeout()));
 
-    _bar = std::make_unique<CAProgressStatusBar>(new CAProgressStatusBar(_mainWin.get()));
+    _bar = std::make_unique<CAProgressStatusBar>(_mainWin.get());
     _mainWin->statusBar()->addWidget(_bar.get());
     connect(_bar.get(), SIGNAL(cancelButtonClicked(bool)), this, SLOT(on_cancelButton_clicked(bool)));
 

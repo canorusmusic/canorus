@@ -83,7 +83,7 @@ CAMusElementFactory::CAMusElementFactory()
     _fmTonicDegreeMinor = false;
     _fmEllipse = false;
     _musElementType = CAMusElement::Undefined;
-    mpoEmpty = new CANote(CADiatonicPitch(), CAPlayableLength(), nullptr, 0); // dummy element
+    mpoEmpty = std::make_shared<CANote>(CADiatonicPitch(), CAPlayableLength(), nullptr, 0); // dummy element
     mpoMusElement = mpoEmpty;
 
     _dynamicText = "mf";
@@ -110,7 +110,7 @@ CAMusElementFactory::CAMusElementFactory()
 CAMusElementFactory::~CAMusElementFactory()
 {
     removeMusElem(true);
-    delete mpoEmpty;
+    mpoEmpty.reset();
 }
 
 /*!
@@ -120,7 +120,7 @@ CAMusElementFactory::~CAMusElementFactory()
 void CAMusElementFactory::removeMusElem(bool bReallyRemove /* = false */)
 {
     if (mpoMusElement && mpoMusElement != mpoEmpty && bReallyRemove)
-        delete mpoMusElement;
+        mpoMusElement.reset();
 
     mpoMusElement = mpoEmpty;
 }
@@ -164,8 +164,8 @@ bool CAMusElementFactory::configureClef(CAStaff* staff,
 {
     bool success = false;
     if (staff && staff->voiceList().size()) {
-        mpoMusElement = new CAClef(_eClef, staff, 0, _iClefOffset);
-        success = staff->voiceList()[0]->insert(right, mpoMusElement);
+        mpoMusElement = std::make_shared<CAClef>(_eClef, staff, 0, _iClefOffset);
+        success = staff->voiceList()[0]->insert(right, mpoMusElement.get());
         if (!success)
             removeMusElem(true);
     }
@@ -180,10 +180,10 @@ bool CAMusElementFactory::configureKeySignature(CAStaff* staff,
 {
     bool success = false;
     if (staff && staff->voiceList().size()) {
-        mpoMusElement = new CAKeySignature(CADiatonicKey(_diatonicKeyNumberOfAccs, _diatonicKeyGender),
+        mpoMusElement = std::make_shared<CAKeySignature>(CADiatonicKey(_diatonicKeyNumberOfAccs, _diatonicKeyGender),
             staff,
             0);
-        success = staff->voiceList()[0]->insert(right, mpoMusElement);
+        success = staff->voiceList()[0]->insert(right, mpoMusElement.get());
         if (!success)
             removeMusElem(true);
     }
@@ -198,10 +198,10 @@ bool CAMusElementFactory::configureTimeSignature(CAStaff* staff,
 {
     bool success = false;
     if (staff && staff->voiceList().size()) {
-        mpoMusElement = new CATimeSignature(_iTimeSigBeats, _iTimeSigBeat,
+        mpoMusElement = std::make_shared<CATimeSignature>(_iTimeSigBeats, _iTimeSigBeat,
             staff,
             0);
-        success = staff->voiceList()[0]->insert(right, mpoMusElement);
+        success = staff->voiceList()[0]->insert(right, mpoMusElement.get());
         if (!success)
             removeMusElem(true);
     }
@@ -216,10 +216,10 @@ bool CAMusElementFactory::configureBarline(CAStaff* staff,
 {
     bool success = false;
     if (staff && staff->voiceList().size()) {
-        mpoMusElement = new CABarline(_eBarlineType,
+        mpoMusElement = std::make_shared<CABarline>(_eBarlineType,
             staff,
             0);
-        success = staff->voiceList()[0]->insert(right, mpoMusElement);
+        success = staff->voiceList()[0]->insert(right, mpoMusElement.get());
         if (!success)
             removeMusElem(true);
     }
@@ -239,28 +239,28 @@ bool CAMusElementFactory::configureNote(int pitch,
     removeMusElem();
 
     if (right && addToChord) {
-        mpoMusElement = new CANote(CADiatonicPitch(pitch, _iNoteAccs),
+        mpoMusElement = std::make_shared<CANote>(CADiatonicPitch(pitch, _iNoteAccs),
             static_cast<CANote*>(right)->playableLength(),
             voice,
             0, // timeStart is set when inserting to voice
             static_cast<CANote*>(right)->timeLength());
 
-        bSuccess = voice->insert(right, mpoMusElement, true);
+        bSuccess = voice->insert(right, mpoMusElement.get(), true);
         if (static_cast<CANote*>(right)->tuplet()) {
-            static_cast<CANote*>(right)->tuplet()->addNote(static_cast<CAPlayable*>(mpoMusElement));
-            static_cast<CANote*>(mpoMusElement)->setTuplet(static_cast<CANote*>(right)->tuplet());
+            static_cast<CANote*>(right)->tuplet()->addNote(static_cast<CAPlayable*>(mpoMusElement.get()));
+            static_cast<CANote*>(mpoMusElement.get())->setTuplet(static_cast<CANote*>(right)->tuplet());
         }
     } else {
-        mpoMusElement = new CANote(CADiatonicPitch(pitch, _iNoteAccs),
+        mpoMusElement = std::make_shared<CANote>(CADiatonicPitch(pitch, _iNoteAccs),
             _playableLength,
             voice,
             0);
 
         // add an empty syllable or reposit syllables
-        static_cast<CANote*>(mpoMusElement)->setStemDirection(_eNoteStemDirection);
-        bSuccess = voice->insert(right, mpoMusElement, false);
+        static_cast<CANote*>(mpoMusElement.get())->setStemDirection(_eNoteStemDirection);
+        bSuccess = voice->insert(right, mpoMusElement.get(), false);
 
-        if (voice->lastNote() == mpoMusElement) {
+        if (voice->lastNote() == mpoMusElement.get()) {
             // note was appended, reposition elements in dependent contexts accordingly
             for (CALyricsContext* lc : voice->lyricsContextList()) {
                 lc->repositSyllables();
@@ -307,7 +307,7 @@ bool CAMusElementFactory::configureNote(int pitch,
     }
 
     if (bSuccess) {
-        static_cast<CANote*>(mpoMusElement)->updateTies();
+        static_cast<CANote*>(mpoMusElement.get())->updateTies();
     } else
         removeMusElem(true);
 
@@ -322,27 +322,27 @@ bool CAMusElementFactory::configureSlur(CAStaff* staff,
 {
     bool success = false;
     removeMusElem();
-    CASlur* slur = new CASlur(slurType(), CASlur::SlurPreferred, staff, noteStart, noteEnd);
+    auto slur = std::make_shared<CASlur>(slurType(), CASlur::SlurPreferred, staff, noteStart, noteEnd);
     mpoMusElement = slur;
 
     slur->setSlurStyle(slurStyle());
     switch (slurType()) {
     case CASlur::TieType:
-        noteStart->setTieStart(slur);
+        noteStart->setTieStart(slur.get());
         if (noteEnd)
-            noteEnd->setTieEnd(slur);
+            noteEnd->setTieEnd(slur.get());
         success = true;
         break;
     case CASlur::SlurType:
-        noteStart->setSlurStart(slur);
+        noteStart->setSlurStart(slur.get());
         if (noteEnd)
-            noteEnd->setSlurEnd(slur);
+            noteEnd->setSlurEnd(slur.get());
         success = true;
         break;
     case CASlur::PhrasingSlurType:
-        noteStart->setPhrasingSlurStart(slur);
+        noteStart->setPhrasingSlurStart(slur.get());
         if (noteEnd)
-            noteEnd->setPhrasingSlurEnd(slur);
+            noteEnd->setPhrasingSlurEnd(slur.get());
         success = true;
         break;
     }
@@ -366,88 +366,88 @@ bool CAMusElementFactory::configureMark(CAMusElement* elt)
     switch (markType()) {
     case CAMark::Dynamic: {
         if (elt->musElementType() == CAMusElement::Note) {
-            mpoMusElement = new CADynamic(dynamicText(), dynamicVolume(), static_cast<CANote*>(elt));
+            mpoMusElement = std::make_shared<CADynamic>(dynamicText(), dynamicVolume(), static_cast<CANote*>(elt));
             success = true;
         }
         break;
     }
     case CAMark::Crescendo: {
         if (elt->musElementType() == CAMusElement::Note) {
-            mpoMusElement = new CACrescendo(crescendoFinalVolume(), static_cast<CANote*>(elt), crescendoType());
+            mpoMusElement = std::make_shared<CACrescendo>(crescendoFinalVolume(), static_cast<CANote*>(elt), crescendoType());
             success = true;
         }
         break;
     }
     case CAMark::Text: {
         if (elt->isPlayable()) {
-            mpoMusElement = new CAText("", static_cast<CAPlayable*>(elt));
+            mpoMusElement = std::make_shared<CAText>("", static_cast<CAPlayable*>(elt));
             success = true;
         }
         break;
     }
     case CAMark::BookMark: {
-        mpoMusElement = new CABookMark("", elt);
+        mpoMusElement = std::make_shared<CABookMark>("", elt);
         success = true;
         break;
     }
     case CAMark::InstrumentChange: {
         if (elt->musElementType() == CAMusElement::Note) {
-            mpoMusElement = new CAInstrumentChange(instrument(), static_cast<CANote*>(elt));
+            mpoMusElement = std::make_shared<CAInstrumentChange>(instrument(), static_cast<CANote*>(elt));
             success = true;
         }
         break;
     }
     case CAMark::Tempo: {
-        mpoMusElement = new CATempo(tempoBeat(), tempoBpm(), elt);
+        mpoMusElement = std::make_shared<CATempo>(tempoBeat(), tempoBpm(), elt);
         success = true;
         break;
     }
     case CAMark::Ritardando: {
         if (elt->isPlayable()) {
-            mpoMusElement = new CARitardando(50, static_cast<CAPlayable*>(elt), elt->timeLength() * 2, ritardandoType());
+            mpoMusElement = std::make_shared<CARitardando>(50, static_cast<CAPlayable*>(elt), elt->timeLength() * 2, ritardandoType());
             success = true;
         }
         break;
     }
     case CAMark::Pedal: {
-        mpoMusElement = new CAMark(CAMark::Pedal, elt);
+        mpoMusElement = std::make_shared<CAMark>(CAMark::Pedal, elt);
         success = true;
         break;
     }
     case CAMark::Fermata: {
         if (elt->isPlayable()) {
-            mpoMusElement = new CAFermata(static_cast<CAPlayable*>(elt), fermataType());
+            mpoMusElement = std::make_shared<CAFermata>(static_cast<CAPlayable*>(elt), fermataType());
             success = true;
         } else if (elt->musElementType() == CAMusElement::Barline) {
-            mpoMusElement = new CAFermata(static_cast<CABarline*>(elt), fermataType());
+            mpoMusElement = std::make_shared<CAFermata>(static_cast<CABarline*>(elt), fermataType());
             success = true;
         }
         break;
     }
     case CAMark::RepeatMark: {
         if (elt->musElementType() == CAMusElement::Barline) {
-            mpoMusElement = new CARepeatMark(static_cast<CABarline*>(elt), repeatMarkType(), (repeatMarkType() == CARepeatMark::Volta ? repeatMarkVoltaNumber() : 0));
+            mpoMusElement = std::make_shared<CARepeatMark>(static_cast<CABarline*>(elt), repeatMarkType(), (repeatMarkType() == CARepeatMark::Volta ? repeatMarkVoltaNumber() : 0));
             success = true;
         }
         break;
     }
     case CAMark::RehersalMark: {
         if (elt->musElementType() == CAMusElement::Barline) {
-            mpoMusElement = new CAMark(CAMark::RehersalMark, elt);
+            mpoMusElement = std::make_shared<CAMark>(CAMark::RehersalMark, elt);
             success = true;
         }
         break;
     }
     case CAMark::Fingering: {
         if (elt->musElementType() == CAMusElement::Note) {
-            mpoMusElement = new CAFingering(fingeringFinger(), static_cast<CANote*>(elt), isFingeringOriginal());
+            mpoMusElement = std::make_shared<CAFingering>(fingeringFinger(), static_cast<CANote*>(elt), isFingeringOriginal());
             success = true;
         }
         break;
     }
     case CAMark::Articulation: {
         if (elt->musElementType() == CAMusElement::Note) {
-            mpoMusElement = new CAArticulation(articulationType(), static_cast<CANote*>(elt));
+            mpoMusElement = std::make_shared<CAArticulation>(articulationType(), static_cast<CANote*>(elt));
             success = true;
         }
         break;
@@ -459,7 +459,7 @@ bool CAMusElementFactory::configureMark(CAMusElement* elt)
     }
 
     if (success) {
-        elt->addMark(static_cast<CAMark*>(mpoMusElement));
+        elt->addMark(static_cast<CAMark*>(mpoMusElement.get()));
         return true;
     }
 
@@ -473,11 +473,11 @@ bool CAMusElementFactory::configureRest(CAVoice* voice, CAMusElement* right)
 {
     bool success = false;
     if (voice) {
-        mpoMusElement = new CARest(restType(),
+        mpoMusElement = std::make_shared<CARest>(restType(),
             _playableLength,
             voice,
             0);
-        success = voice->insert(right, mpoMusElement);
+        success = voice->insert(right, mpoMusElement.get());
 
         if (!success)
             removeMusElem(true);
@@ -513,7 +513,7 @@ bool CAMusElementFactory::configureFiguredBassNumber(CAFiguredBassMark* fbm)
     } else {
         fbm->addNumber(_fbmNumber);
     }
-    mpoMusElement = fbm;
+    mpoMusElement = std::shared_ptr<CAFiguredBassMark>(fbm);
 
     return true;
 }
@@ -533,7 +533,7 @@ bool CAMusElementFactory::configureFunctionMark(CAFunctionMarkContext* fmc, int 
         isFMEllipse());
 
     fmc->addFunctionMark(fm);
-    mpoMusElement = fm;
+    mpoMusElement = std::shared_ptr<CAFunctionMark>(fm);
 
     return true;
 }

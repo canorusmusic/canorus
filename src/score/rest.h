@@ -23,7 +23,8 @@ public:
     CARest(CARestType type, CAPlayableLength length, CAVoice* voice, int timeStart, int timeLength = -1);
     ~CARest();
 
-    CARest* clone(CAVoice* voice = nullptr);
+    std::shared_ptr<CAPlayable> clonePlayable(CAVoice* voice = nullptr);
+    std::shared_ptr<CARest> cloneRest(CAVoice* voice = nullptr);
 
     CARestType restType() { return _restType; }
     void setRestType(CARestType type) { _restType = type; }

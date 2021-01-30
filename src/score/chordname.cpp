@@ -28,13 +28,18 @@ CAChordName::~CAChordName()
 {
 }
 
-CAChordName* CAChordName::clone(CAContext* context)
+std::shared_ptr<CAMusElement> CAChordName::cloneRealElement(CAContext *context)
+{
+    return cloneChordName(context);
+}
+
+std::shared_ptr<CAChordName> CAChordName::cloneChordName(CAContext* context)
 {
     if (context && context->contextType() != CAContext::ChordNameContext) {
         return nullptr;
     }
 
-    return new CAChordName(
+    return std::make_shared<CAChordName>(
         diatonicPitch(),
         qualityModifier(),
         static_cast<CAChordNameContext*>(context),

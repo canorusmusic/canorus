@@ -36,13 +36,18 @@ CARest::~CARest()
 {
 }
 
-CARest* CARest::clone(CAVoice* voice)
+std::shared_ptr<CAPlayable> CARest::clonePlayable(CAVoice *voice)
 {
-    CARest* r = new CARest(restType(), playableLength(), voice, timeStart(), timeLength());
+    return cloneRest(voice);
+}
+
+std::shared_ptr<CARest> CARest::cloneRest(CAVoice* voice)
+{
+    std::shared_ptr<CARest> r = std::make_shared<CARest>(restType(), playableLength(), voice, timeStart(), timeLength());
 
     for (int i = 0; i < markList().size(); i++) {
-        CAMark* m = static_cast<CAMark*>(markList()[i]->clone(r));
-        r->addMark(m);
+        auto m = (markList()[i]->cloneMark(r.get()));
+        r->addMark(m.get());
     }
 
     return r;
@@ -109,11 +114,11 @@ QList<CARest*> CARest::composeRests(int timeLength, int timeStart, CAVoice* voic
 
     // 2048 is the longest rest (breve)
     for (; timeLength > 2048; timeLength -= 2048, timeStart += 2048)
-        list << new CARest(type, CAPlayableLength(CAPlayableLength::Breve), voice, timeStart);
+        list << std::make_shared<CARest>(type, CAPlayableLength(CAPlayableLength::Breve), voice, timeStart).get();
 
     for (int i = 0, TL = 2048; i < 256; (i ? i *= 2 : i++), TL /= 2) {
         if (TL <= timeLength) {
-            list << new CARest(type, CAPlayableLength(static_cast<CAPlayableLength::CAMusicLength>(i)), voice, timeStart);
+            list << std::make_shared<CARest>(type, CAPlayableLength(static_cast<CAPlayableLength::CAMusicLength>(i)), voice, timeStart).get();
             timeLength -= TL;
             timeStart += TL;
         }

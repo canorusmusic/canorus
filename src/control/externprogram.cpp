@@ -22,7 +22,7 @@
 */
 
 CAExternProgram::CAExternProgram(bool bRcvStdErr /* = true */, bool bRcvStdOut /* = true */)
-  : _poExternProgram(new QProcess())
+  : _poExternProgram(std::make_unique<QProcess>())
 {
     _bRcvStdErr = bRcvStdErr;
     _oParamDelimiter = " ";

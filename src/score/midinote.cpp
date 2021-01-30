@@ -31,9 +31,9 @@ CAMidiNote::~CAMidiNote()
 {
 }
 
-CAMidiNote* CAMidiNote::clone(CAVoice* v)
+std::shared_ptr<CAPlayable> CAMidiNote::clonePlayable(CAVoice* v)
 {
-    return new CAMidiNote(midiPitch(), timeStart(), timeLength(), v);
+    return std::make_shared<CAMidiNote>(midiPitch(), timeStart(), timeLength(), v);
 }
 
 int CAMidiNote::compare(CAMusElement* elt)

@@ -12,6 +12,8 @@
 #include <QList>
 #include <QString>
 
+#include <memory>
+
 class CAContext;
 class CAMusElement;
 class CAPlayable;
@@ -40,8 +42,11 @@ public:
 
     CAMusElement(CAContext* context, int timeStart, int timeLength = 0);
     virtual ~CAMusElement();
-
-    virtual CAMusElement* clone(CAContext* context = nullptr) = 0;
+    CAMusElement(const CAMusElement&) = delete;
+    CAMusElement& operator=(const CAMusElement&) = delete;
+    std::shared_ptr<CAMusElement> cloneMusElement(CAContext *context = nullptr) {
+        return cloneRealElement(context);
+    }
     virtual int compare(CAMusElement* elt) = 0;
 
     CAMusElementType musElementType() { return _musElementType; }
@@ -83,7 +88,9 @@ public:
     static CAMusElementType musElementTypeFromString(const QString);
 
 protected:
+    virtual std::shared_ptr<CAMusElement> cloneRealElement(CAContext* context = nullptr) = 0;
     inline void setMusElementType(CAMusElementType type) { _musElementType = type; }
+    void clearMarkList();
 
     CAMusElementType _musElementType;
     QList<CAMark*> _markList;

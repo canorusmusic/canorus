@@ -26,9 +26,10 @@ public:
     };
 
     CATimeSignature(int beats, int beat, CAStaff* staff, int startTime, CATimeSignatureType type = Classical);
-
-    CATimeSignature* clone(CAContext* context = nullptr);
     ~CATimeSignature();
+
+    std::shared_ptr<CAMusElement> cloneRealElement(CAContext* context = nullptr);
+    std::shared_ptr<CATimeSignature> cloneTimeSignature(CAContext* context = nullptr);
     CAStaff* staff() { return static_cast<CAStaff*>(context()); }
 
     int beats() { return _beats; }

@@ -28,7 +28,7 @@ CACanImport::~CACanImport()
 
 CADocument* CACanImport::importDocumentImpl()
 {
-    CAArchive* arc = new CAArchive(*stream()->device());
+    auto arc = std::make_shared<CAArchive>(*stream()->device());
 
     if (!arc->error()) {
         // Read the score
@@ -71,8 +71,8 @@ CADocument* CACanImport::importDocumentImpl()
         }
 
         // Replace the newly created archive with the current one
-        delete doc->archive();
-        doc->setArchive(arc);
+        // shared pointer autodelete
+        doc->setArchive(arc.get());
 
         if (!_fileName.isEmpty()) {
             doc->setFileName(_fileName);

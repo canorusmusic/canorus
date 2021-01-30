@@ -26,9 +26,9 @@ CADynamic::~CADynamic()
 {
 }
 
-CADynamic* CADynamic::clone(CAMusElement* elt)
+std::shared_ptr<CADynamic> CADynamic::cloneDynamic(CAMusElement* elt)
 {
-    return new CADynamic(text(), volume(), (elt->musElementType() == CAMusElement::Note) ? static_cast<CANote*>(elt) : nullptr);
+    return std::make_shared<CADynamic>(text(), volume(), (elt->musElementType() == CAMusElement::Note) ? static_cast<CANote*>(elt) : nullptr);
 }
 
 int CADynamic::compare(CAMusElement* elt)
