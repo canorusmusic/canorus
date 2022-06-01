@@ -16,6 +16,7 @@ class CANote;
 class CAFingering : public CAMark {
 public:
     enum CAFingerNumber {
+        Undefined = 0,
         First = 1,
         Second = 2,
         Third = 3,
@@ -26,7 +27,11 @@ public:
         RHeel,
         LToe,
         RToe,
-        Undefined
+        P, // Righthand thumb
+        I, // Righthand pointer finger
+        M, // Righthand middle finger
+        A, // Righthand ring finger
+        X // Righthand little finger
     };
 
     CAFingering(CAFingerNumber finger, CANote* m, bool italic = false);
