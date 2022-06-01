@@ -87,8 +87,16 @@ const QString CAFingering::fingerNumberToString(CAFingerNumber n)
         return "LToe";
     case RToe:
         return "RToe";
-    case Undefined:
-        return "Undefined";
+    case P:
+        return "P";
+    case I:
+        return "I";
+    case M:
+        return "M";
+    case A:
+        return "A";
+    case X:
+        return "X";
     }
     return "Undefined";
 }
@@ -115,6 +123,16 @@ CAFingering::CAFingerNumber CAFingering::fingerNumberFromString(const QString f)
         return LToe;
     } else if (f == "RToe") {
         return RToe;
+    } else if (f == "P") {
+        return P;
+    } else if (f == "I") {
+        return I;
+    } else if (f == "M") {
+        return M;
+    } else if (f == "A") {
+        return A;
+    } else if (f == "X") {
+        return X;
     } else
         return Undefined;
 }

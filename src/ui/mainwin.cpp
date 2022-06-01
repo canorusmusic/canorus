@@ -580,6 +580,11 @@ void CAMainWin::createCustomActions()
     uiFinger->addButton(QIcon("images:mark/fingering/rheel.svg"), CAFingering::RHeel, tr("Right Heel", "fingering"));
     uiFinger->addButton(QIcon("images:mark/fingering/ltoe.svg"), CAFingering::LToe, tr("Left Toe", "fingering"));
     uiFinger->addButton(QIcon("images:mark/fingering/rtoe.svg"), CAFingering::RToe, tr("Right Toe", "fingering"));
+	uiFinger->addButton(QIcon("images:mark/fingering/p.svg"), CAFingering::P, tr("P", "fingering"));
+	uiFinger->addButton(QIcon("images:mark/fingering/i.svg"), CAFingering::I, tr("I", "fingering"));
+	uiFinger->addButton(QIcon("images:mark/fingering/m.svg"), CAFingering::M, tr("M", "fingering"));
+	uiFinger->addButton(QIcon("images:mark/fingering/a.svg"), CAFingering::A, tr("A", "fingering"));
+	uiFinger->addButton(QIcon("images:mark/fingering/x.svg"), CAFingering::X, tr("X", "fingering"));
 
     uiFingeringOriginal = new QCheckBox(tr("Original"), this);
     uiFingeringOriginal->setObjectName("uiFingeringOriginal");
