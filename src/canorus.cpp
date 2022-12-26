@@ -61,19 +61,31 @@ void CACanorus::initSearchPaths()
     for (QString cat: categories) {
         // The "base" prefix is used by CASwigPython and CASwigRuby to find files which are not in a subdir.
         QString dirname = (cat == "base") ? "" : cat;
-        if (QDir(QDir::currentPath() + "/" + dirname).exists())
+
+        // When debugging, current directory may be used for resources.
+        if (QDir(QDir::currentPath() + "/" + dirname).exists()) {
             QDir::addSearchPath(cat, QDir::currentPath() + "/" + dirname);
-        // Special rules
-        if (cat == "images" && QDir(qApp->applicationDirPath() + "/ui/" + dirname).exists())
-            QDir::addSearchPath(cat, qApp->applicationDirPath() + "/ui/" + dirname);
-        if (cat == "doc" && QDir(qApp->applicationDirPath()).exists("../" + dirname))
-            QDir::addSearchPath(cat, qApp->applicationDirPath() + "/../doc");
-        // END Special rules
-        if (QDir(qApp->applicationDirPath() + "/" + dirname).exists())
+        }
+
+        // Expected paths when running from canorus source.
+        if (cat == "images" && QDir(qApp->applicationDirPath() + "/../../src/ui/images/").exists()) {
+            QDir::addSearchPath(cat, qApp->applicationDirPath() + "/../../src/ui/images/");
+        }
+        if (cat == "fonts" && QDir(qApp->applicationDirPath() + "/../../src/fonts/").exists()) {
+            QDir::addSearchPath(cat, qApp->applicationDirPath() + "/../../src/fonts/");
+        }
+        if (cat == "doc" && QDir(qApp->applicationDirPath()).exists("/../../doc/")) {
+            QDir::addSearchPath(cat, qApp->applicationDirPath() + "/../../doc");
+        }
+
+        // Expected paths when running from installation directory.
+        if (QDir(qApp->applicationDirPath() + "/" + dirname).exists()) {
             QDir::addSearchPath(cat, qApp->applicationDirPath() + "/" + dirname);
+        }
 #ifdef DEFAULT_DATA_DIR
-        if (QDir(DEFAULT_DATA_DIR + ("/" + dirname)).exists())
+        if (QDir(DEFAULT_DATA_DIR + ("/" + dirname)).exists()) {
             QDir::addSearchPath(cat, DEFAULT_DATA_DIR + ("/" + dirname));
+        }
 #endif
     }
 }

@@ -16,6 +16,11 @@ ELSE("${CMAKE_BUILD_TYPE}" MATCHES "Debug") # Release
   ENDIF(${CANORUS_DEV_INSTALL} MATCHES True)
 ENDIF("${CMAKE_BUILD_TYPE}" MATCHES "Debug")
 
+# Set build directory, if none set.
+if (CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
+  message(FATAL_ERROR "Build directory and source directory must not be the same.\nDo something like this:\nmkdir build; cd build; cmake ..")
+endif (CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
+
 # Don't build anything unless the version of CMake is high enough.
 cmake_minimum_required(VERSION 2.6)
 

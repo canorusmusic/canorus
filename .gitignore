@@ -1,3 +1,5 @@
+# build directory
+build
 # CMake stuff
 CMakeLists.txt.user*
 # Do not add CMake generated files here

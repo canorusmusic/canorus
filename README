@@ -73,11 +73,12 @@ Compilation:
   You can skip this step, but the User's guide won't be launched using
   Help->User's Guide action then.
 2. Go to Canorus root directory and run:
- $ cmake .
+ $ mkdir build; cd build
+ $ cmake ..
  $ make
- $ src/canorus(.exe)
+ $ build/src/canorus(.exe)
   To create a release build without debug info, run:
- $ cmake -DCMAKE_BUILD_TYPE=Release
+ $ cmake .. -DCMAKE_BUILD_TYPE=Release
   Note that this also causes QT_NO_DEBUG to be defined.
 
 
