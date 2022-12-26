@@ -584,12 +584,23 @@ void CALilyPondExport::exportLyricsContextBlock(CALyricsContext* lc)
 */
 void CALilyPondExport::exportLyricsContextImpl(CALyricsContext* lc)
 {
-    if (lc->stanzaNumber() > 0) {
-        out() << "\\set stanza = \"" << lc->stanzaNumber() << ". \"\n";
-    }
+    bool stanzaNumberExported = lc->stanzaNumber() == 0;
     for (int i = 0; i < lc->syllableList().size(); i++) {
-        if (i > 0)
-            out() << " "; // space between syllables
+        // Add space between the previous and the current syllable.
+        if (i > 0) {
+            out() << " ";
+        }
+
+        // Print stanza number right before the first syllable.
+        if (!stanzaNumberExported && !lc->syllableList()[i]->text().isEmpty()) {
+            out() << "\n";
+            indent();
+            out() << "\\set stanza = \"" << lc->stanzaNumber() << ".\"\n";
+            indent();
+
+            stanzaNumberExported = true;
+        }
+
         out() << syllableToLilyPond(lc->syllableList()[i]);
     }
 }
