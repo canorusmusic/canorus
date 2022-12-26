@@ -56,7 +56,7 @@ CATranspose::CATranspose(QList<CAContext*> contexts)
 
 CATranspose::CATranspose(QList<CAMusElement*> selection)
 {
-    _elements = QSet<CAMusElement*>::fromList(selection);
+    _elements = QSet<CAMusElement*>(selection.begin(), selection.end());
 }
 
 CATranspose::~CATranspose()
@@ -76,7 +76,7 @@ void CATranspose::addContext(CAContext* context)
     case CAContext::Staff: {
         CAStaff* staff = static_cast<CAStaff*>(context);
         for (int j = 0; j < staff->voiceList().size(); j++) {
-            _elements.unite(QSet<CAMusElement*>::fromList(staff->voiceList()[j]->musElementList()));
+            _elements.unite(QSet<CAMusElement*>(staff->voiceList()[j]->musElementList().begin(), staff->voiceList()[j]->musElementList().end()));
         }
         break;
     }
