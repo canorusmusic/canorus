@@ -13,7 +13,7 @@ IF(NOT CMAKE_BUILD_TYPE)
 	SET(CMAKE_BUILD_TYPE Debug)
 ENDIF(NOT CMAKE_BUILD_TYPE)
 
-SET(CMAKE_C_FLAGS_DEBUG "-O0 -g -fstack-protector-all -Wall -Werror -Wuninitialized -Wtype-limits -Wstack-protector")
+SET(CMAKE_C_FLAGS_DEBUG "-O0 -g -fstack-protector-all -Wall -Wuninitialized -Wtype-limits -Wstack-protector")
 SET(CMAKE_C_FLAGS_RELEASE "-O2")
 
 SET(CMAKE_CXX_STANDARD 14)
