@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2007-2022, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -46,18 +46,27 @@ void CADrawableSyllable::draw(QPainter* p, const CADrawSettings s)
     QFont font("Century Schoolbook L");
     font.setPixelSize(qRound(DEFAULT_TEXT_SIZE * s.z));
     p->setFont(font);
-    p->drawText(s.x, s.y + qRound(height() * s.z), textToDrawableText(syllable()->text()));
+
+    QString text = syllable()->text();
+    // Show "space" dot when selected, if empty and not part of hyphen/melisma.
+    if (text.isEmpty() && !syllable()->hyphenStart() && !syllable()->melismaStart()) {
+        text = CADrawableMusElement::EMPTY_PLACEHOLDER;
+    }
+    // Strip melisma.
+    text = textToDrawableText(text);
+
+    p->drawText(s.x, s.y + qRound(height() * s.z), text);
 
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 11, 0))
-    int textWidth = QFontMetrics(font).horizontalAdvance(textToDrawableText(syllable()->text()));
+    int textWidth = QFontMetrics(font).horizontalAdvance(text);
 #else
-    int textWidth = QFontMetrics(font).width(textToDrawableText(syllable()->text()));
+    int textWidth = QFontMetrics(font).width(text);
 #endif
     if (syllable()->hyphenStart() && (width() * s.z - textWidth) > qRound(DEFAULT_DASH_LENGTH * s.z)) {
         p->drawLine(qRound(s.x + width() * s.z * 0.5 + 0.5 * textWidth - 0.5 * s.z * DEFAULT_DASH_LENGTH), s.y + qRound(height() * s.z * 0.7),
             qRound(s.x + width() * s.z * 0.5 + 0.5 * textWidth + 0.5 * s.z * DEFAULT_DASH_LENGTH), s.y + qRound(height() * s.z * 0.7));
     } else if (syllable()->melismaStart() && (width() * s.z - textWidth) > qRound(DEFAULT_DASH_LENGTH * s.z)) {
-        p->drawLine(s.x + textWidth, s.y + qRound(height() * s.z),
+        p->drawLine(s.x + textWidth + (!text.isEmpty()?1.5*s.z:0), s.y + qRound(height() * s.z),
             qRound(s.x + width() * s.z), s.y + qRound(height() * s.z));
     }
 }

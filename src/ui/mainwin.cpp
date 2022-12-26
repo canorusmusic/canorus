@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2020, Reinhard Katzmann, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2022, Reinhard Katzmann, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -2028,8 +2028,22 @@ void CAMainWin::scoreViewMouseMove(QMouseEvent* e, QPoint coords)
 void CAMainWin::scoreViewDoubleClick(QMouseEvent*, const QPoint)
 {
     if (mode() == EditMode) {
-        static_cast<CAScoreView*>(sender())->selectAllCurBar();
-        static_cast<CAScoreView*>(sender())->repaint();
+        CAScoreView* c = static_cast<CAScoreView*>(sender());
+        CADrawableMusElement* dElt = nullptr;
+        CAMusElement* elt = nullptr;
+
+        if (c->selection().size() == 1) {
+           dElt = c->selection().front();
+           elt = dElt->musElement();
+        }
+
+        if (elt && (elt->musElementType() == CAMusElement::Syllable || elt->musElementType() == CAMusElement::ChordName || (elt->musElementType() == CAMusElement::Mark && (static_cast<CAMark*>(elt)->markType() == CAMark::Text || static_cast<CAMark*>(elt)->markType() == CAMark::BookMark)))) {
+           c->createTextEdit(dElt);
+        } else {
+            c->selectAllCurBar();
+        }
+
+        c->repaint();
     }
 }
 
@@ -2100,10 +2114,6 @@ void CAMainWin::scoreViewMouseRelease(QMouseEvent* e, QPoint coords)
             if (v->selection().size() == 1) {
                 dElt = v->selection().front();
                 elt = dElt->musElement();
-            }
-
-            if (elt && (elt->musElementType() == CAMusElement::Syllable || elt->musElementType() == CAMusElement::ChordName || (elt->musElementType() == CAMusElement::Mark && (static_cast<CAMark*>(elt)->markType() == CAMark::Text || static_cast<CAMark*>(elt)->markType() == CAMark::BookMark)))) {
-                v->createTextEdit(dElt);
             }
         }
         v->repaint();

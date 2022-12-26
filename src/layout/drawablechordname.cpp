@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2019, Matevž Jekovec, Canorus development team
+	Copyright (c) 2019-2022, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -86,7 +86,7 @@ QString CADrawableChordName::drawableDiatonicPitch()
 {
     QString chordPitch = CADiatonicPitch::diatonicPitchToString(chordName()->diatonicPitch());
     if (chordPitch.isEmpty()) {
-        return "";
+        return CADrawableMusElement::EMPTY_PLACEHOLDER;
     }
 
     chordPitch = chordPitch[0].toUpper(); // chord-style pitch is upper case
