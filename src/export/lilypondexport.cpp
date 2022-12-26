@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007-2020, Matevž Jekovec, Canorus development team
+	Copyright (c) 2007-2022, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -637,7 +637,9 @@ void CALilyPondExport::exportChordNameContextImpl(CAChordNameContext* cnc)
             if (cn->diatonicPitch().noteName() != CADiatonicPitch::Undefined) {
                 // chord change
                 out() << CADiatonicPitch::diatonicPitchToString(cn->diatonicPitch()) << playableLengthToLilyPond(pl[0]);
-                out() << ":" << cn->qualityModifier();
+                if (!cn->qualityModifier().isEmpty()) {
+                    out() << ":" << cn->qualityModifier();
+                }
             } else {
                 // diatonicPitch is Undefined - either chord name is empty or a syntax error.
                 // In either case, don't print the chord.
