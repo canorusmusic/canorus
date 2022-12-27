@@ -43,6 +43,8 @@ public:
     virtual CADrawable* clone() { return clone(nullptr); }
     virtual CADrawableMusElement* clone(CADrawableContext* newContext = nullptr) = 0;
 
+    static const QString EMPTY_PLACEHOLDER;
+
 protected:
     void setDrawableMusElementType(CADrawableMusElementType t) { _drawableMusElementType = t; }
 
