@@ -3872,20 +3872,15 @@ void CAMainWin::confirmTextEdit(CAScoreView* v, CATextEdit* textEdit, CAMusEleme
     }
     case CAMusElement::Mark: {
         CAMark* mark = static_cast<CAMark*>(elt);
-        if (!textEdit->text().isEmpty() || mark->markType() == CAMark::BookMark) {
-            CACanorus::undo()->createUndoCommand(document(), tr("text edit", "undo"));
-            if (mark->markType() == CAMark::Text) {
-                static_cast<CAText*>(mark)->setText(textEdit->text());
-            } else if (mark->markType() == CAMark::BookMark) {
-                static_cast<CABookMark*>(mark)->setText(textEdit->text());
-            }
-            v->removeTextEdit();
-        } else {
-            // remove text sign with empty content, if it's not a bookmark
-            CACanorus::undo()->createUndoCommand(document(), tr("text edit", "delete"));
-            v->removeTextEdit();
-            delete mark;
+        CACanorus::undo()->createUndoCommand(document(), tr("text edit", "undo"));
+
+        if (mark->markType() == CAMark::Text) {
+            static_cast<CAText*>(mark)->setText(textEdit->text());
+        } else if (mark->markType() == CAMark::BookMark) {
+            static_cast<CABookMark*>(mark)->setText(textEdit->text());
         }
+
+        v->removeTextEdit();
         break;
     }
     case CAMusElement::ChordName: {
