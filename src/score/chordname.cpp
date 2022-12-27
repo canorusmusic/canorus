@@ -28,6 +28,17 @@ CAChordName::~CAChordName()
 {
 }
 
+/*!
+    Clears the pitch and modifier.
+    This function is usually called when deleting the chord name from the UI, where it shouldn't actually
+    be removed, but only cleared.
+*/
+void CAChordName::clear()
+{
+    setDiatonicPitch(CADiatonicPitch::Undefined);
+    setQualityModifier("");
+}
+
 CAChordName* CAChordName::clone(CAContext* context)
 {
     if (context && context->contextType() != CAContext::ChordNameContext) {
