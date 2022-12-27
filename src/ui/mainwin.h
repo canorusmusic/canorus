@@ -230,11 +230,11 @@ private slots:
 
     // Sheet
     void on_uiRemoveSheet_triggered();
-    void on_uiSheetName_returnPressed();
+    void on_uiSheetName_editingFinished();
     void on_uiSheetProperties_triggered();
 
     // Context
-    void on_uiContextName_returnPressed();
+    void on_uiContextName_editingFinished();
     void on_uiRemoveContext_triggered();
     void on_uiStanzaNumber_valueChanged(int);
     void on_uiAssociatedVoice_activated(int);
@@ -276,7 +276,7 @@ private slots:
     // Dynamic marks
     void on_uiDynamicText_toggled(bool, int);
     void on_uiDynamicVolume_valueChanged(int);
-    void on_uiDynamicCustomText_returnPressed();
+    void on_uiDynamicCustomText_editingFinished();
 
     // Instrument change
     void on_uiInstrumentChange_activated(int);
@@ -293,7 +293,7 @@ private slots:
 
     // Tempo
     void on_uiTempoBeat_toggled(bool, int);
-    void on_uiTempoBpm_returnPressed();
+    void on_uiTempoBpm_editingFinished();
 
     // Tools
     void on_uiSettings_triggered();
@@ -303,7 +303,7 @@ private slots:
 
     // Voice
     void on_uiVoiceNum_valChanged(int);
-    void on_uiVoiceName_returnPressed();
+    void on_uiVoiceName_editingFinished();
     void on_uiVoiceInstrument_activated(int);
     void on_uiRemoveVoice_triggered();
     void on_uiVoiceStemDirection_toggled(bool, int);
