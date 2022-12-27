@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2019, Matevž Jekovec, Canorus development team
+	Copyright (c) 2019-2022, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -55,6 +55,25 @@ int CAChordName::compare(CAMusElement* elt)
 
     return 0;
 }
+
+/*!
+    Transposes the chord for the given \a interval.
+    The new pitch is correctly bounded.
+ */
+CAChordName& CAChordName::operator+=(CAInterval interval)
+{
+    if (diatonicPitch()!=CADiatonicPitch::Undefined) {
+        CADiatonicPitch p = diatonicPitch() + interval;
+        p.setNoteName(p.noteName() % 7);
+        if (p.noteName() < 0) {
+            p.setNoteName(p.noteName() + 7);
+        }
+        setDiatonicPitch(p);
+    }
+
+    return *this;
+}
+
 
 /*!
  * \brief CAChordName::importFromLilyPond parses lilypondish syntax for chord name and applies it

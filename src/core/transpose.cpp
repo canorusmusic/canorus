@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2008-2020, Matevž Jekovec, Canorus development team
+	Copyright (c) 2008-2022, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -135,26 +135,13 @@ void CATranspose::transposeByInterval(CAInterval interval)
     for (CAMusElement* elt : _elements) {
         switch (elt->musElementType()) {
         case CAMusElement::Note:
-        case CAMusElement::ChordName: {
-            CADiatonicPitch newPitch;
-            if (elt->musElementType() == CAMusElement::Note) {
-                newPitch = static_cast<CANote*>(elt)->diatonicPitch();
-            } else if (elt->musElementType() == CAMusElement::ChordName) {
-                newPitch = static_cast<CAChordName*>(elt)->diatonicPitch();
-            }
-
-            newPitch = newPitch + interval;
-
-            if (elt->musElementType() == CAMusElement::Note) {
-                static_cast<CANote*>(elt)->setDiatonicPitch(newPitch);
-            } else if (elt->musElementType() == CAMusElement::ChordName) {
-                static_cast<CAChordName*>(elt)->setDiatonicPitch(newPitch);
-            }
-
+            static_cast<CANote*>(elt)->setDiatonicPitch(static_cast<CANote*>(elt)->diatonicPitch() + interval);
             break;
-        }
         case CAMusElement::KeySignature:
             static_cast<CAKeySignature*>(elt)->setDiatonicKey(static_cast<CAKeySignature*>(elt)->diatonicKey() + interval);
+            break;
+        case CAMusElement::ChordName:
+            *static_cast<CAChordName*>(elt)+=(interval);
             break;
         case CAMusElement::FunctionMark:
             static_cast<CAFunctionMark*>(elt)->setKey(static_cast<CAFunctionMark*>(elt)->key() + interval);
