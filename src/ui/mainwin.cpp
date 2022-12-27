@@ -3588,6 +3588,9 @@ void CAMainWin::onExportDone(int)
 void CAMainWin::on_uiVoiceNum_valChanged(int voiceNr)
 {
     if (currentScoreView()) {
+        // Store voice name if changed.
+        on_uiVoiceName_editingFinished();
+
         if (voiceNr && currentScoreView()->currentContext() && currentScoreView()->currentContext()->context()->contextType() == CAContext::Staff && voiceNr <= static_cast<CAStaff*>(currentScoreView()->currentContext()->context())->voiceList().size()) {
             setCurrentVoice(static_cast<CAStaff*>(currentScoreView()->currentContext()->context())->voiceList()[voiceNr - 1]);
         } else {
@@ -3638,10 +3641,10 @@ void CAMainWin::on_uiClefOffset_valueChanged(int newOffset)
 /*!
 	Gets the current voice and sets its name.
 */
-void CAMainWin::on_uiVoiceName_returnPressed()
+void CAMainWin::on_uiVoiceName_editingFinished()
 {
     CAVoice* voice = currentVoice();
-    if (voice) {
+    if (voice && voice->name()!=uiVoiceName->text()) {
         CACanorus::undo()->createUndoCommand(document(), tr("change voice name", "undo"));
         CACanorus::undo()->pushUndoCommand();
         voice->setName(uiVoiceName->text());
@@ -4614,10 +4617,10 @@ void CAMainWin::on_uiDocumentProperties_triggered()
     CAPropertiesDialog::documentProperties(document(), this);
 }
 
-void CAMainWin::on_uiSheetName_returnPressed()
+void CAMainWin::on_uiSheetName_editingFinished()
 {
     CASheet* sheet = currentSheet();
-    if (sheet) {
+    if (sheet && sheet->name()!=uiSheetName->text()) {
         CACanorus::undo()->createUndoCommand(document(), tr("change sheet name", "undo"));
         CACanorus::undo()->pushUndoCommand();
         sheet->setName(uiSheetName->text());
@@ -4636,10 +4639,10 @@ void CAMainWin::on_uiSheetProperties_triggered()
 /*!
 	Sets the current context name.
 */
-void CAMainWin::on_uiContextName_returnPressed()
+void CAMainWin::on_uiContextName_editingFinished()
 {
     CAContext* context = currentContext();
-    if (context) {
+    if (context && context->name()!=uiContextName->text()) {
         CACanorus::undo()->createUndoCommand(document(), tr("change context name", "undo"));
         CACanorus::undo()->pushUndoCommand();
         context->setName(uiContextName->text());
@@ -5996,7 +5999,7 @@ void CAMainWin::on_uiDynamicVolume_valueChanged(int vol)
     }
 }
 
-void CAMainWin::on_uiDynamicCustomText_returnPressed()
+void CAMainWin::on_uiDynamicCustomText_editingFinished()
 {
     QString text = uiDynamicCustomText->text();
     CADynamic::CADynamicText t = CADynamic::dynamicTextFromString(text);
@@ -6008,7 +6011,9 @@ void CAMainWin::on_uiDynamicCustomText_returnPressed()
         CAScoreView* v = currentScoreView();
         if (v && v->selection().size()) {
             CADynamic* dynamic = dynamic_cast<CADynamic*>(v->selection().at(0)->musElement());
-            if (dynamic) {
+            if (dynamic && dynamic->text()!=text) {
+                CACanorus::undo()->createUndoCommand(document(), tr("change dynamic text", "undo"));
+
                 dynamic->setText(text);
                 CACanorus::rebuildUI(document(), currentSheet());
             }
@@ -6160,7 +6165,7 @@ void CAMainWin::on_uiTempoBeat_toggled(bool, int t)
     }
 }
 
-void CAMainWin::on_uiTempoBpm_returnPressed()
+void CAMainWin::on_uiTempoBpm_editingFinished()
 {
     QString text = uiTempoBpm->text();
     int bpm = text.toInt();
@@ -6169,12 +6174,16 @@ void CAMainWin::on_uiTempoBpm_returnPressed()
         musElementFactory()->setTempoBpm(bpm);
     } else if (mode() == EditMode) {
         CAScoreView* v = currentScoreView();
-        CACanorus::undo()->createUndoCommand(document(), tr("change tempo bpm", "undo"));
+        bool undoDone = false;
 
         for (int i = 0; i < v->selection().size(); i++) {
             CATempo* tempo = dynamic_cast<CATempo*>(v->selection().at(i)->musElement());
 
-            if (tempo) {
+            if (tempo && tempo->bpm()!=bpm) {
+                if (!undoDone) {
+                    CACanorus::undo()->createUndoCommand(document(), tr("change tempo bpm", "undo"));
+                    undoDone = true;
+                }
                 tempo->setBpm(bpm);
             }
         }
