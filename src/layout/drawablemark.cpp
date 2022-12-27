@@ -219,7 +219,13 @@ void CADrawableMark::draw(QPainter* p, CADrawSettings s)
         font.setPixelSize(qRound(DEFAULT_TEXT_SIZE * s.z));
         p->setFont(font);
 
-        p->drawText(s.x, s.y + qRound(height() * s.z), static_cast<CAText*>(mark())->text());
+        QString text = static_cast<CAText*>(mark())->text();
+        if (text.isEmpty()) {
+            text = CADrawableMusElement::EMPTY_PLACEHOLDER;
+        }
+
+        p->drawText(s.x, s.y + qRound(height() * s.z), text);
+
         break;
     }
     case CAMark::BookMark: {
@@ -227,8 +233,14 @@ void CADrawableMark::draw(QPainter* p, CADrawSettings s)
         font.setPixelSize(qRound(DEFAULT_TEXT_SIZE * s.z));
         p->setFont(font);
 
+        QString text = static_cast<CAText*>(mark())->text();
+        if (text.isEmpty()) {
+            text = CADrawableMusElement::EMPTY_PLACEHOLDER;
+        }
+
         p->drawPixmap(s.x, s.y, _pixmap->scaled(qRound(DEFAULT_PIXMAP_SIZE * s.z), qRound(DEFAULT_PIXMAP_SIZE * s.z)));
-        p->drawText(s.x + qRound((DEFAULT_PIXMAP_SIZE + 1) * s.z), s.y + qRound(height() * s.z), static_cast<CAText*>(mark())->text());
+        p->drawText(s.x + qRound((DEFAULT_PIXMAP_SIZE + 1) * s.z), s.y + qRound(height() * s.z), text);
+
         break;
     }
     case CAMark::RehersalMark: {
