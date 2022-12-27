@@ -5527,12 +5527,12 @@ void CAMainWin::copySelection(CAScoreView* v)
 }
 
 /*!
-	Delete action.
+    Delete action.
 
-	If \a deleteSyllables or \a deleteNotes is True, it completely removes the element.
-	Otherwise it only replaces it with rest.
+    If \a deleteSyllables or \a deleteNotes is True, it completely removes the element (shift+del).
+    Otherwise it only replaces it with rest (del).
 
-	If \a doUndo is True, it also creates undo. doUndo should be False when cutting.
+    If \a doUndo is True, it also creates undo. doUndo should be False when cutting.
 */
 void CAMainWin::deleteSelection(CAScoreView* v, bool deleteSyllables, bool deleteNotes, bool doUndo)
 {
@@ -5715,6 +5715,14 @@ void CAMainWin::deleteSelection(CAScoreView* v, bool deleteSyllables, bool delet
                     lc->repositSyllables();
                 } else {
                     static_cast<CASyllable*>(*i)->clear(); // only clears syllable's text
+                }
+            } else if ((*i)->musElementType() == CAMusElement::ChordName) {
+                if (deleteSyllables) {
+                    CAChordNameContext* cc = static_cast<CAChordNameContext*>((*i)->context());
+                    (*i)->context()->remove(*i); // actually removes the chord if SHIFT is pressed
+                    cc->repositChordNames();
+                } else {
+                    static_cast<CAChordName*>(*i)->clear(); // only clears the chord pitch/modifiers
                 }
             } else if ((*i)->musElementType() == CAMusElement::FiguredBassMark) {
                 CAFiguredBassMark* fbm = static_cast<CAFiguredBassMark*>(*i);

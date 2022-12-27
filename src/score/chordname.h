@@ -18,6 +18,7 @@ class CAChordName : public CAMusElement {
 public:
     CAChordName(CADiatonicPitch pitch, QString qualityModifier, CAChordNameContext* parent, int timeStart, int timeLength);
     virtual ~CAChordName();
+    void clear();
 
     CAChordName& operator+=(CAInterval);
 
