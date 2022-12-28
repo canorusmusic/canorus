@@ -423,7 +423,8 @@ void CALilyPondExport::exportMarksAfterElement(CAMusElement* elt)
         }
         case CAMark::RepeatMark: {
             CARepeatMark* v = static_cast<CARepeatMark*>(curMark);
-            if (v->repeatMarkType() == CARepeatMark::Volta) {
+            switch (v->repeatMarkType()) {
+            case CARepeatMark::Volta: {
                 int vn = v->voltaNumber();
                 if (_voltaBracketIsOpen || _voltaBracketOccured) {
                     out() << " \\set Score.repeatCommands = #'((volta #f) (volta \"" << vn << "\")) ";
@@ -433,6 +434,24 @@ void CALilyPondExport::exportMarksAfterElement(CAMusElement* elt)
                     _voltaBracketIsOpen = true;
                     _voltaBracketOccured = true;
                 }
+                break;
+            }
+            case CARepeatMark::Coda:
+            case CARepeatMark::Segno:
+            case CARepeatMark::VarCoda: {
+                out() << " \\mark \\markup { \\musicglyph \"scripts." <<
+                         CARepeatMark::repeatMarkTypeToString(v->repeatMarkType()).toLower() <<
+                         "\" }";
+                break;
+            }
+            case CARepeatMark::DalCoda:
+            case CARepeatMark::DalSegno:
+            case CARepeatMark::DalVarCoda: {
+                out() << " \\mark \\markup { \\italic \"Dal \" \\tiny \\raise #1 \\musicglyph \"scripts." <<
+                         CARepeatMark::repeatMarkTypeToString(v->repeatMarkType()).mid(3).toLower() <<
+                         "\" }";
+                break;
+            }
             }
             break;
         }
