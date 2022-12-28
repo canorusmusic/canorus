@@ -1,8 +1,8 @@
 /*!
-	Copyright (c) 2007-2019, Matevž Jekovec, Canorus development team
-	All Rights Reserved. See AUTHORS for a complete list of authors.
+    Copyright (c) 2007-2022, Matevž Jekovec, Canorus development team
+    All Rights Reserved. See AUTHORS for a complete list of authors.
 
-	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+    Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
 #include <QFont>
@@ -312,32 +312,37 @@ void CADrawableMark::draw(QPainter* p, CADrawSettings s)
     case CAMark::RepeatMark: {
         CARepeatMark* r = static_cast<CARepeatMark*>(mark());
 
-        // draw "dal" if needed
+        // draw "Dal" if needed
         if (r->repeatMarkType() == CARepeatMark::DalSegno || r->repeatMarkType() == CARepeatMark::DalCoda || r->repeatMarkType() == CARepeatMark::DalVarCoda) {
             QFont font("Century Schoolbook L");
             font.setStyle(QFont::StyleItalic);
             font.setPixelSize(qRound(DEFAULT_TEXT_SIZE * s.z));
             p->setFont(font);
-            p->drawText(s.x, s.y, QString("Dal"));
-            s.x += qRound(45 * s.z);
+            p->drawText(s.x, s.y + qRound(1.5 * s.z), QString("Dal"));
+            s.x += qRound(36 * s.z);
         }
 
         // draw the actual sign
         QFont font("Emmentaler");
-        font.setPixelSize(qRound(DEFAULT_TEXT_SIZE * 1.4 * s.z));
+        font.setPixelSize(qRound(DEFAULT_TEXT_SIZE * 1.5 * s.z));
+        if (CARepeatMark::repeatMarkTypeToString(r->repeatMarkType()).startsWith("Dal")) {
+            font.setPixelSize(qRound(DEFAULT_TEXT_SIZE * 1.2 * s.z));
+        }
+
         p->setFont(font);
-        switch (static_cast<CARepeatMark*>(mark())->repeatMarkType()) {
+
+        switch (r->repeatMarkType()) {
         case CARepeatMark::Segno:
         case CARepeatMark::DalSegno:
-            p->drawText(s.x, s.y, QString(CACanorus::fetaCodepoint("scripts.segno")));
+            p->drawText(s.x, s.y - qRound(2 * s.z), QString(CACanorus::fetaCodepoint("scripts.segno")));
             break;
         case CARepeatMark::Coda:
         case CARepeatMark::DalCoda:
-            p->drawText(s.x, s.y, QString(CACanorus::fetaCodepoint("scripts.coda")));
+            p->drawText(s.x, s.y - qRound(2 * s.z), QString(CACanorus::fetaCodepoint("scripts.coda")));
             break;
         case CARepeatMark::VarCoda:
         case CARepeatMark::DalVarCoda:
-            p->drawText(s.x, s.y, QString(CACanorus::fetaCodepoint("scripts.varcoda")));
+            p->drawText(s.x, s.y - qRound(2 * s.z), QString(CACanorus::fetaCodepoint("scripts.varcoda")));
             break;
         case CARepeatMark::Volta:
             break;
