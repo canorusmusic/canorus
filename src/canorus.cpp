@@ -74,6 +74,9 @@ void CACanorus::initSearchPaths()
         if (cat == "fonts" && QDir(qApp->applicationDirPath() + "/../../src/fonts/").exists()) {
             QDir::addSearchPath(cat, qApp->applicationDirPath() + "/../../src/fonts/");
         }
+        if (cat == "scripts" && QDir(qApp->applicationDirPath() + "/../../src/scripts/").exists()) {
+            QDir::addSearchPath(cat, qApp->applicationDirPath() + "/../../src/scripts/");
+        }
         if (cat == "doc" && QDir(qApp->applicationDirPath()).exists("/../../doc/")) {
             QDir::addSearchPath(cat, qApp->applicationDirPath() + "/../../doc");
         }

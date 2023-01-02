@@ -558,8 +558,8 @@ bool CAPyConsole::cmdIntern(QString strCmd)
             curObject = curObject->parent();
         PyEval_RestoreThread(CASwigPython::mainThreadState);
         argsPython << CASwigPython::toPythonObject(static_cast<CAMainWin*>(curObject)->document(), CASwigPython::Document);
-        PyEval_ReleaseThread(CASwigPython::mainThreadState);
         argsPython << PyUnicode_FromString(strCmd.toStdString().c_str());
+        PyEval_ReleaseThread(CASwigPython::mainThreadState);
 
         // Can't autoreload because we are using global objects in pycl2.py that would get overwritten.
         auto ret = CASwigPython::callFunction(QFileInfo("scripts:pycl2.py").absoluteFilePath(), "main", argsPython, false);
