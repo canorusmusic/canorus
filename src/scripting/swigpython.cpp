@@ -78,6 +78,9 @@ void CASwigPython::init()
     }
 #endif
 
+    // Load proxy classes.
+    PyRun_SimpleString("import CanorusPython");
+
     mainThreadState = PyThreadState_Get();
     PyEval_ReleaseThread(mainThreadState);
 
@@ -126,6 +129,8 @@ PyObject* CASwigPython::callFunction(QString fileName, QString function, QList<P
         return args.first();
     }
 
+    PyEval_RestoreThread(mainThreadState);
+
     PyObject* pyArgs = PyTuple_New(args.size());
     if (!pyArgs)
         return nullptr;
@@ -135,8 +140,6 @@ PyObject* CASwigPython::callFunction(QString fileName, QString function, QList<P
     // Load module, if not yet
     QString moduleName = fileName.left(fileName.lastIndexOf(".py"));
     moduleName = moduleName.remove(0, moduleName.lastIndexOf("/") + 1);
-
-    PyEval_RestoreThread(CASwigPython::mainThreadState);
 
     PyObject* pyModule;
     if (autoReload) {
