@@ -32,7 +32,7 @@ private slots:
 private:
     void restoreStatusBar();
 
-    std::unique_ptr<CAMainWin> _mainWin;
+    CAMainWin* _mainWin;
     std::unique_ptr<CAProgressStatusBar> _bar;
     std::unique_ptr<QTimer> _updateTimer;
     CAFile *_file;

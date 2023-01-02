@@ -66,7 +66,7 @@ void CAMainWinProgressCtl::startProgress(CAFile &f)
 
     connect(_updateTimer.get(), SIGNAL(timeout()), this, SLOT(on_updateTimer_timeout()));
 
-    _bar = std::make_unique<CAProgressStatusBar>(new CAProgressStatusBar(_mainWin.get()));
+    _bar = std::make_unique<CAProgressStatusBar>(new CAProgressStatusBar(_mainWin));
     _mainWin->statusBar()->addWidget(_bar.get());
     connect(_bar.get(), SIGNAL(cancelButtonClicked(bool)), this, SLOT(on_cancelButton_clicked(bool)));
 
