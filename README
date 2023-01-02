@@ -88,8 +88,8 @@ Installation
 
 Compilation under Debian/Ubuntu:
 ===========================
-One-liner to install build dependencies on Ubuntu 17.10 Artful Aardvark:
- $ sudo apt install cmake g++ make libqt5webkit5-dev libqt5svg5-dev qtbase5-dev qttools5-dev qtwebengine5-dev libasound2-dev
+One-liner to install build dependencies on Ubuntu 18.04 through 22.04:
+ $ sudo apt install cmake g++ make libqt5webkit5-dev libqt5svg5-dev qtbase5-dev qttools5-dev qtwebengine5-dev libasound2-dev zlib1g-dev
 
 For python scripting support, add:
  $ sudo apt install python3-dev swig
