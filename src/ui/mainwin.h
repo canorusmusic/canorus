@@ -214,6 +214,7 @@ private slots:
     void on_uiInsertSyllable_toggled(bool);
     void on_uiInsertFBM_toggled(bool);
     void on_uiInsertFM_toggled(bool);
+    void on_uiInsertChordName_toggled(bool);
 
     // View
     void on_uiFullscreen_toggled(bool);

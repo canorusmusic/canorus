@@ -129,6 +129,7 @@ public:
     inline void clearSelectionRegionList() { _selectionRegionList.clear(); }
     inline CADrawable::CADirection resizeDirection() { return _resizeDirection; }
     bool mouseDragActivated();
+    bool clickTimerActivated();
 
     /////////////////////////////////////////////////////////////////////
     // Music elements and contexts query, space calculation and access //

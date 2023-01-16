@@ -26,7 +26,7 @@ CAChordNameContext::CAChordNameContext(QString name, CASheet* sheet)
     : CAContext(name, sheet)
 {
     setContextType(ChordNameContext);
-    repositChordNames();
+    repositionElements();
 }
 
 CAChordNameContext::~CAChordNameContext()
@@ -52,27 +52,20 @@ void CAChordNameContext::addChordName(CAChordName* m, bool replace)
     }
 }
 
-/*!
-	Inserts an empty chord name and shifts the chord names after.
-	This function is usually called when initializing the context.
-*/
-void CAChordNameContext::addEmptyChordName(int timeStart, int timeLength)
+CAMusElement* CAChordNameContext::insertEmptyElement(int timeStart)
 {
     int i;
     for (i = 0; i < _chordNameList.size() && _chordNameList[i]->timeStart() < timeStart; i++)
         ;
-    _chordNameList.insert(i, (new CAChordName(CADiatonicPitch::Undefined, "", this, timeStart, timeLength)));
+    CAChordName *newChord = new CAChordName(CADiatonicPitch::Undefined, "", this, timeStart, 1);
+    _chordNameList.insert(i, newChord);
     for (i++; i < _chordNameList.size(); i++)
-        _chordNameList[i]->setTimeStart(_chordNameList[i]->timeStart() + timeLength);
+        _chordNameList[i]->setTimeStart(_chordNameList[i]->timeStart() + 1);
+
+    return newChord;
 }
 
-/*!
-	It repositions the existing chord names (sets timeStart and timeLength) one by one according to the playable music
-	elements above the context.
-
- 	\sa CALyricsContext::repositSyllables(), CAFiguredBassContext::repositFiguredBassMarks(), CAFunctionMarkContext::repositFunctions()
-*/
-void CAChordNameContext::repositChordNames()
+void CAChordNameContext::repositionElements()
 {
     int ts, tl;
     int curIdx; // contains current position in _chordNameList
@@ -86,7 +79,7 @@ void CAChordNameContext::repositChordNames()
 
         // add new empty chord names, if playables still exist above
         if (curIdx == _chordNameList.size()) {
-            addEmptyChordName(ts, tl);
+            insertEmptyElement(ts);
         }
 
         // apply timeStart and timeLength to existing chord names

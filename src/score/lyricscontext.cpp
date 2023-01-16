@@ -82,57 +82,6 @@ void CALyricsContext::cloneLyricsContextProperties(CALyricsContext* lc)
     setAssociatedVoice(lc->associatedVoice());
 }
 
-/*!
-	Keeps the content and order of the syllables, but changes startTimes and lengths according to the notes in associatedVoice.
-	This function is usually called when associatedVoice is changed or the whole lyricsContext is initialized for the first time.
-	If the notes and syllables aren't synchronized (too little syllables for notes) it adds empty syllables.
-
- 	\sa CAFunctionMarkContext::repositFunctions(), CAFiguredBassContext::repositFiguredBassMarks(), CAChordNameContext::repositChordNames()
-*/
-void CALyricsContext::repositSyllables()
-{
-    if (associatedVoice()) {
-        QList<CANote*> noteList = associatedVoice()->getNoteList();
-
-        // synchronize syllable times with notes
-        int i, j;
-        for (i = 0, j = 0; i < noteList.size() && j < _syllableList.size(); i++, j++) {
-            if (!noteList[i]->isFirstInChord()) { // skip until the first note in the chord
-                j--;
-                continue;
-            }
-            _syllableList[j]->setTimeStart(noteList[i]->timeStart());
-            _syllableList[j]->setTimeLength(noteList[i]->timeLength());
-        }
-
-        // CASE 1: more syllables than chords
-        int lastNonEmpty = j-1; // index of the last non-empty syllable
-        for (; j < _syllableList.size(); j++) {
-            if (!_syllableList[j]->text().isEmpty()) {
-                lastNonEmpty = j;
-            }
-
-            // add some common dummy time so that we preserve the order and the leftover syllables are vertically aligned
-            if (j>0) {
-                _syllableList[j]->setTimeStart(_syllableList[j - 1]->timeStart() + _syllableList[j - 1]->timeLength());
-                _syllableList[j]->setTimeLength(256);
-            }
-        }
-        // remove empty "leftover" syllables from the end so that lastNonEmpty will be last
-        while (_syllableList.size()-1 != lastNonEmpty) {
-            delete _syllableList.takeLast();
-        }
-
-        // CASE 2: more chords than syllables
-        for (; i < noteList.size(); i++) { // add empty syllables at the end, if missing
-            if (!noteList[i]->isFirstInChord()) { // skip until the first note in the chord
-                continue;
-            }
-            addEmptySyllable(noteList[i]->timeStart(), noteList[i]->timeLength());
-        }
-    }
-}
-
 CAMusElement* CALyricsContext::next(CAMusElement* elt)
 {
     if (elt->musElementType() != CAMusElement::Syllable)
@@ -172,6 +121,68 @@ bool CALyricsContext::remove(CAMusElement* elt)
         delete elt;
 
     return success;
+}
+
+CAMusElement *CALyricsContext::insertEmptyElement(int timeStart)
+{
+    int i;
+    for (i = 0; i < _syllableList.size() && _syllableList[i]->timeStart() < timeStart; i++)
+        ;
+    CASyllable *newSyl = new CASyllable("", ((i > 0) ? (_syllableList[i - 1]->hyphenStart()) : (false)), ((i > 0) ? (_syllableList[i - 1]->melismaStart()) : (false)), this, timeStart, 1);
+    _syllableList.insert(i, newSyl);
+    for (i++; i < _syllableList.size(); i++)
+        _syllableList[i]->setTimeStart(_syllableList[i]->timeStart() + 1);
+
+    return newSyl;
+}
+
+/*!
+    Keeps the content and order of the syllables, but changes startTimes and lengths according to the notes in associatedVoice.
+    This function is usually called when associatedVoice is changed or the whole lyricsContext is initialized for the first time.
+    If the notes and syllables aren't synchronized (too little syllables for notes) it adds empty syllables.
+*/
+void CALyricsContext::repositionElements()
+{
+    if (associatedVoice()) {
+        QList<CANote*> noteList = associatedVoice()->getNoteList();
+
+        // synchronize syllable times with notes
+        int i, j;
+        for (i = 0, j = 0; i < noteList.size() && j < _syllableList.size(); i++, j++) {
+            if (!noteList[i]->isFirstInChord()) { // skip until the first note in the chord
+                j--;
+                continue;
+            }
+            _syllableList[j]->setTimeStart(noteList[i]->timeStart());
+            _syllableList[j]->setTimeLength(noteList[i]->timeLength());
+        }
+
+        // CASE 1: more syllables than chords
+        int lastNonEmpty = j-1; // index of the last non-empty syllable
+        for (; j < _syllableList.size(); j++) {
+            if (!_syllableList[j]->text().isEmpty()) {
+                lastNonEmpty = j;
+            }
+
+            // add some common dummy time so that we preserve the order and the leftover syllables are vertically aligned
+            if (j>0) {
+                _syllableList[j]->setTimeStart(_syllableList[j - 1]->timeStart() + _syllableList[j - 1]->timeLength());
+                _syllableList[j]->setTimeLength(256);
+            }
+        }
+        // remove empty "leftover" syllables from the end so that lastNonEmpty will be last
+        while (_syllableList.size()-1 != lastNonEmpty) {
+            delete _syllableList.takeLast();
+        }
+
+        // CASE 2: more chords than syllables
+        for (; i < noteList.size(); i++) { // add empty syllables at the end, if missing
+            if (!noteList[i]->isFirstInChord()) { // skip until the first note in the chord
+                continue;
+            }
+            insertEmptyElement(noteList[i]->timeStart());
+        }
+    }
 }
 
 /*!
@@ -224,23 +235,6 @@ bool CALyricsContext::addSyllable(CASyllable* syllable, bool replace)
 }
 
 /*!
-	Adds an empty syllable to the context.
-	This function is usually called when initializing the lyrics context
-	or inserting a new note.
-*/
-bool CALyricsContext::addEmptySyllable(int timeStart, int timeLength)
-{
-    int i;
-    for (i = 0; i < _syllableList.size() && _syllableList[i]->timeStart() < timeStart; i++)
-        ;
-    _syllableList.insert(i, (new CASyllable("", ((i > 0) ? (_syllableList[i - 1]->hyphenStart()) : (false)), ((i > 0) ? (_syllableList[i - 1]->melismaStart()) : (false)), this, timeStart, timeLength)));
-    for (i++; i < _syllableList.size(); i++)
-        _syllableList[i]->setTimeStart(_syllableList[i]->timeStart() + timeLength);
-
-    return true;
-}
-
-/*!
 	Finds the syllable with exactly the given \a timeStart or Null, if such a
 	syllables doesn't exist.
  */
@@ -267,5 +261,5 @@ void CALyricsContext::setAssociatedVoice(CAVoice* v)
         v->addLyricsContext(this);
 
     _associatedVoice = v;
-    repositSyllables();
+    repositionElements();
 }

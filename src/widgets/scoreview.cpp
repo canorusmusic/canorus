@@ -1398,6 +1398,16 @@ bool CAScoreView::mouseDragActivated()
 }
 
 /*!
+    Is click timer still active and waiting for potential double or triple click.
+
+    @return True, if click timer is activated; False otherwise.
+ */
+bool CAScoreView::clickTimerActivated()
+{
+    return _clickTimer->isActive();
+}
+
+/*!
 	Processes the wheelEvent().
 	A new signal is emitted: CAWheelEvent(), which usually gets processed by the parent class then.
 */

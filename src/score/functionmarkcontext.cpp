@@ -26,7 +26,7 @@ CAFunctionMarkContext::CAFunctionMarkContext(const QString name, CASheet* sheet)
 {
     _contextType = CAContext::FunctionMarkContext;
 
-    repositFunctions();
+    repositionElements();
 }
 
 CAFunctionMarkContext::~CAFunctionMarkContext()
@@ -101,16 +101,21 @@ bool CAFunctionMarkContext::remove(CAMusElement* elt)
     return _functionMarkList.removeAll(static_cast<CAFunctionMark*>(elt));
 }
 
+CAMusElement *CAFunctionMarkContext::insertEmptyElement(int timeStart) {
+    CAFunctionMark *newElt = new CAFunctionMark(CAFunctionMark::Undefined, false, CADiatonicKey("C"), this, timeStart, 1);
+    addFunctionMark(newElt, false);
+
+    return newElt;
+}
+
 /*!
-	It repositions the functions (sets timeStart and timeLength) one by one according to the chords
-	above the context.
+    It repositions the functions (sets timeStart and timeLength) one by one according to the chords
+    above the context.
 
-	If two functions contain the same timeStart, they are treated as modulation and will contain
-	the same timeStart after reposition is done as well!
-
- 	\sa CALyricsContext::repositSyllables(), CAFiguredBassContext::repositFiguredBassMarks(), CAChordNameContext::repositChordNames()
+    If two functions contain the same timeStart, they are treated as modulation and will contain
+    the same timeStart after reposition is done as well!
 */
-void CAFunctionMarkContext::repositFunctions()
+void CAFunctionMarkContext::repositionElements()
 {
     int ts, tl;
     int curIdx; // contains current position in _functionMarkList
@@ -123,7 +128,7 @@ void CAFunctionMarkContext::repositFunctions()
                 tl = chord[i]->timeLength();
 
         if (curIdx == _functionMarkList.size()) { // add new empty functions, if chords still exist
-            addEmptyFunction(ts, tl);
+            insertEmptyElement(ts);
             curIdx++;
         }
 
@@ -133,15 +138,6 @@ void CAFunctionMarkContext::repositFunctions()
             _functionMarkList[curIdx]->setTimeStart(ts);
         }
     }
-}
-
-/*!
-	Adds an undefined function mark (uses for empty function marks when only function mark context exists and no actual
-	functions added).
-*/
-void CAFunctionMarkContext::addEmptyFunction(int timeStart, int timeLength)
-{
-    addFunctionMark(new CAFunctionMark(CAFunctionMark::Undefined, false, CADiatonicKey("C"), this, timeStart, timeLength), false);
 }
 
 /*!
