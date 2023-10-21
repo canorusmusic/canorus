@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007-2020, Matevž Jekovec, Canorus development team
+	Copyright (c) 2007-2023, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -93,31 +93,41 @@ void CALyricsContext::repositSyllables()
 {
     if (associatedVoice()) {
         QList<CANote*> noteList = associatedVoice()->getNoteList();
+
+        // synchronize syllable times with notes
         int i, j;
         for (i = 0, j = 0; i < noteList.size() && j < _syllableList.size(); i++, j++) {
-            if (i > 0 && noteList[i - 1]->timeStart() == noteList[i]->timeStart()) { // chord
-                i++;
+            if (!noteList[i]->isFirstInChord()) { // skip until the first note in the chord
+                j--;
                 continue;
             }
             _syllableList[j]->setTimeStart(noteList[i]->timeStart());
             _syllableList[j]->setTimeLength(noteList[i]->timeLength());
         }
-        int firstEmpty = j;
-        for (; j < _syllableList.size() && j > 0; j++) { // add syllables at the end, if too much of them exist
-            if (!_syllableList[j]->text().isEmpty())
-                firstEmpty = j + 1;
 
-            _syllableList[j]->setTimeStart(_syllableList[j - 1]->timeStart() + _syllableList[j - 1]->timeLength());
-            _syllableList[j]->setTimeLength(256);
+        // CASE 1: more syllables than chords
+        int lastNonEmpty = j-1; // index of the last non-empty syllable
+        for (; j < _syllableList.size(); j++) {
+            if (!_syllableList[j]->text().isEmpty()) {
+                lastNonEmpty = j;
+            }
+
+            // add some common dummy time so that we preserve the order and the leftover syllables are vertically aligned
+            if (j>0) {
+                _syllableList[j]->setTimeStart(_syllableList[j - 1]->timeStart() + _syllableList[j - 1]->timeLength());
+                _syllableList[j]->setTimeLength(256);
+            }
         }
-        // remove empty "leftover" syllables from the end
-        for (j = firstEmpty; j < _syllableList.size() && j > 0; j++) {
-            delete _syllableList.takeAt(j);
+        // remove empty "leftover" syllables from the end so that lastNonEmpty will be last
+        while (_syllableList.size()-1 != lastNonEmpty) {
+            delete _syllableList.takeLast();
         }
 
+        // CASE 2: more chords than syllables
         for (; i < noteList.size(); i++) { // add empty syllables at the end, if missing
-            if (i > 0 && noteList[i]->timeStart() == noteList[i - 1]->timeStart()) // chord
+            if (!noteList[i]->isFirstInChord()) { // skip until the first note in the chord
                 continue;
+            }
             addEmptySyllable(noteList[i]->timeStart(), noteList[i]->timeLength());
         }
     }
