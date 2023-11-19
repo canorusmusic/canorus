@@ -4906,6 +4906,12 @@ void CAMainWin::updateContextToolBar()
 */
 void CAMainWin::updateInsertToolBar()
 {
+    if (mode() == InsertMode) {
+        // Do not change any insert toolbar layout when in Insert mode. Otherwise the user couldn't leave the Insert mode,
+        // because the specific toggle button may be evicted.
+        return;
+    }
+
     if (currentSheet()) {
         uiNewContext->setVisible(true);
         uiInsertToolBar->show();
