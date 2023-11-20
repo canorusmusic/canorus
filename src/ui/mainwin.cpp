@@ -633,6 +633,7 @@ void CAMainWin::setupCustomUi()
     /// \todo When Qt Designer have support for setting the visibility property, do this in Qt Designer already! -Matevz
     uiPrintToolBar->hide();
     uiFileToolBar->hide();
+    uiStandardToolBar->setMinimumHeight(48); // Hack to prevent score view shifting when there is QTextEdit in the top toolbar or not.
     uiStandardToolBar->updateGeometry();
 
     // Insert Toolbar
