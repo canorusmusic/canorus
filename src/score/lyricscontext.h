@@ -24,16 +24,15 @@ public:
     CALyricsContext* clone(CASheet* s);
     void cloneLyricsContextProperties(CALyricsContext*);
 
-    void repositSyllables();
-
     CAMusElement* next(CAMusElement*);
     CAMusElement* previous(CAMusElement*);
     bool remove(CAMusElement*);
+    CAMusElement *insertEmptyElement(int timeStart);
+    void repositionElements();
     void clear();
 
     inline const QList<CASyllable*>& syllableList() { return _syllableList; }
     bool addSyllable(CASyllable*, bool replace = true);
-    bool addEmptySyllable(int timeStart, int timeLength);
     //	void removeSyllable( CASyllable* s ) { _syllableList.removeAll(s); }
     CASyllable* removeSyllableAtTimeStart(int timeStart);
     CASyllable* syllableAtTimeStart(int timeStart);

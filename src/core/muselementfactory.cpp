@@ -263,18 +263,18 @@ bool CAMusElementFactory::configureNote(int pitch,
         if (voice->lastNote() == mpoMusElement) {
             // note was appended, reposition elements in dependent contexts accordingly
             for (CALyricsContext* lc : voice->lyricsContextList()) {
-                lc->repositSyllables();
+                lc->repositionElements();
             }
             for (CAContext* context : voice->staff()->sheet()->contextList()) {
                 switch (context->contextType()) {
                 case CAContext::FunctionMarkContext:
-                    static_cast<CAFunctionMarkContext*>(context)->repositFunctions();
+                    static_cast<CAFunctionMarkContext*>(context)->repositionElements();
                     break;
                 case CAContext::FiguredBassContext:
-                    static_cast<CAFiguredBassContext*>(context)->repositFiguredBassMarks();
+                    static_cast<CAFiguredBassContext*>(context)->repositionElements();
                     break;
                 case CAContext::ChordNameContext:
-                    static_cast<CAChordNameContext*>(context)->repositChordNames();
+                    static_cast<CAChordNameContext*>(context)->repositionElements();
                     break;
                 default:
                     break;
@@ -283,21 +283,16 @@ bool CAMusElementFactory::configureNote(int pitch,
         } else {
             // note was inserted somewhere inbetween, insert empty element in dependent contexts accordingly
             for (CALyricsContext* lc : voice->lyricsContextList()) {
-                lc->addEmptySyllable(mpoMusElement->timeStart(), mpoMusElement->timeLength());
+                lc->insertEmptyElement(mpoMusElement->timeStart());
+                lc->repositionElements();
             }
             for (CAContext* context : voice->staff()->sheet()->contextList()) {
                 switch (context->contextType()) {
                 case CAContext::FunctionMarkContext:
-                    static_cast<CAFunctionMarkContext*>(context)->addEmptyFunction(
-                        mpoMusElement->timeStart(), mpoMusElement->timeLength());
-                    break;
                 case CAContext::FiguredBassContext:
-                    static_cast<CAFiguredBassContext*>(context)->addEmptyFiguredBassMark(
-                        mpoMusElement->timeStart(), mpoMusElement->timeLength());
-                    break;
                 case CAContext::ChordNameContext:
-                    static_cast<CAChordNameContext*>(context)->addEmptyChordName(
-                        mpoMusElement->timeStart(), mpoMusElement->timeLength());
+                    context->insertEmptyElement(mpoMusElement->timeStart());
+                    context->repositionElements();
                     break;
                 default:
                     break;
@@ -483,12 +478,14 @@ bool CAMusElementFactory::configureRest(CAVoice* voice, CAMusElement* right)
             removeMusElem(true);
         else {
             for (CALyricsContext* lc : voice->lyricsContextList()) {
-                lc->repositSyllables();
+                lc->repositionElements();
             }
             for (CAContext* context : voice->staff()->sheet()->contextList()) {
                 switch (context->contextType()) {
+                case CAContext::FunctionMarkContext:
+                case CAContext::FiguredBassContext:
                 case CAContext::ChordNameContext:
-                    static_cast<CAChordNameContext*>(context)->repositChordNames();
+                    static_cast<CAChordNameContext*>(context)->repositionElements();
                     break;
                 default:
                     break;

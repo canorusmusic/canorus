@@ -378,7 +378,7 @@ CALyricsContext* CALilyPondImport::importLyricsContextImpl()
             lc->addSyllable(lastSyllable = new CASyllable(text, false, false, lc, timeSDummy, 0));
         }
     }
-    lc->repositSyllables(); // sets syllables timeStarts and timeLengths
+    lc->repositionElements(); // sets syllables timeStarts and timeLengths
 
     return lc;
 }

@@ -633,6 +633,7 @@ void CAMainWin::setupCustomUi()
     /// \todo When Qt Designer have support for setting the visibility property, do this in Qt Designer already! -Matevz
     uiPrintToolBar->hide();
     uiFileToolBar->hide();
+    uiStandardToolBar->setMinimumHeight(48); // Hack to prevent score view shifting when there is QTextEdit in the top toolbar or not.
     uiStandardToolBar->updateGeometry();
 
     // Insert Toolbar
@@ -1744,7 +1745,7 @@ void CAMainWin::scoreViewMousePress(QMouseEvent* e, const QPoint coords)
                 v->clearSelection();
             v->addToSelection(newlySelectedElement = l[0]); // if the previous selection was not a single element or if the new list doesn't contain the selection set the first element in the available list to the selection
         } else {
-            if (e->modifiers() == Qt::ShiftModifier && v->selection().size()) {
+            if (e->modifiers() == Qt::ShiftModifier && v->selection().size() && !v->clickTimerActivated()) {
                 v->removeFromSelection(l[0]); // shift used on an already selected element - toggle selection
             } else {
                 idx = (v->selection().size() ? l.indexOf(v->selection().front()) : -1);
@@ -1885,9 +1886,10 @@ void CAMainWin::scoreViewMousePress(QMouseEvent* e, const QPoint coords)
             uiEditMode->toggle();
             v->repaint();
             break;
-        } else
-            // Insert music element
-            if (uiInsertPlayable->isChecked()) {
+        }
+
+        // Insert playable music element
+        if (uiInsertPlayable->isChecked()) {
             // Add Note/Rest
             if (e->button() == Qt::RightButton && musElementFactory()->musElementType() == CAMusElement::Note)
                 // place a rest when using right mouse button and note insertion is selected
@@ -1904,7 +1906,7 @@ void CAMainWin::scoreViewMousePress(QMouseEvent* e, const QPoint coords)
             musElementFactory()->setMusElementType(CAMusElement::Note);
 
         // Insert Syllable, Text, or ChordName
-        if (!v->selection().isEmpty() && (uiInsertSyllable->isChecked() || uiInsertChordName->isChecked() || (uiMarkType->isChecked() && success && (musElementFactory()->markType() == CAMark::Text || musElementFactory()->markType() == CAMark::BookMark)))) {
+        if (!v->selection().isEmpty() && success && (uiInsertSyllable->isChecked() || uiInsertChordName->isChecked() || (uiMarkType->isChecked() && (musElementFactory()->markType() == CAMark::Text || musElementFactory()->markType() == CAMark::BookMark)))) {
             v->createTextEdit(v->selection().front());
         } else {
             v->removeTextEdit();
@@ -2025,7 +2027,7 @@ void CAMainWin::scoreViewMouseMove(QMouseEvent* e, QPoint coords)
 
 	\sa CAScoreView::selectAllCurBar()
  */
-void CAMainWin::scoreViewDoubleClick(QMouseEvent*, const QPoint)
+void CAMainWin::scoreViewDoubleClick(QMouseEvent* e, const QPoint p)
 {
     if (mode() == EditMode) {
         CAScoreView* c = static_cast<CAScoreView*>(sender());
@@ -2038,12 +2040,18 @@ void CAMainWin::scoreViewDoubleClick(QMouseEvent*, const QPoint)
         }
 
         if (elt && (elt->musElementType() == CAMusElement::Syllable || elt->musElementType() == CAMusElement::ChordName || (elt->musElementType() == CAMusElement::Mark && (static_cast<CAMark*>(elt)->markType() == CAMark::Text || static_cast<CAMark*>(elt)->markType() == CAMark::BookMark)))) {
-           c->createTextEdit(dElt);
+            if (e->modifiers()==Qt::ShiftModifier && elt->context() && (elt->musElementType() == CAMusElement::Syllable || elt->musElementType() == CAMusElement::ChordName)) {
+                CAMusElement::CAMusElementType t = musElementFactory()->musElementType();
+                musElementFactory()->setMusElementType(elt->musElementType());
+                insertMusElementAt(p, c);
+                musElementFactory()->setMusElementType(t);
+                dElt = (c->selection().size()?c->selection()[0]:dElt);
+            }
+            c->createTextEdit(dElt);
         } else {
             c->selectAllCurBar();
+            c->repaint();
         }
-
-        c->repaint();
     }
 }
 
@@ -2455,7 +2463,7 @@ void CAMainWin::scoreViewKeyPress(QKeyEvent* e)
                     }
 
                     for (int j = 0; j < p->voice()->lyricsContextList().size(); j++) { // reposit syllables
-                        p->voice()->lyricsContextList().at(j)->repositSyllables();
+                        p->voice()->lyricsContextList().at(j)->repositionElements();
                     }
 
                     if (CACanorus::settings()->useNoteChecker()) {
@@ -2938,10 +2946,20 @@ bool CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView* v)
         }
         break;
     }
-    case CAMusElement::MidiNote:
     case CAMusElement::Syllable:
-    case CAMusElement::Tuplet:
     case CAMusElement::ChordName:
+        if (drawableContext->context()->contextType() == CAContext::LyricsContext || drawableContext->context()->contextType() == CAContext::ChordNameContext) {
+            CADrawableMusElement *dLeft = v->nearestLeftElement(coords.x(), coords.y(), drawableContext);
+            CAMusElement *newElt = drawableContext->context()->insertEmptyElement(dLeft ? dLeft->musElement()->timeStart() : 0);
+            if (newElt) {
+                newElt->context()->repositionElements();
+                musElementFactory()->setMusElement(newElt);
+                success = true;
+            }
+        }
+        break;
+    case CAMusElement::MidiNote:
+    case CAMusElement::Tuplet:
     case CAMusElement::Undefined:
         qDebug() << "Warning: CAMainWin::insertMusElementAt - Unhandled Element" << musElementFactory()->musElementType();
         break;
@@ -3682,6 +3700,7 @@ void CAMainWin::on_uiInsertPlayable_toggled(bool checked)
 void CAMainWin::on_uiInsertSyllable_toggled(bool checked)
 {
     if (checked) {
+        musElementFactory()->setMusElementType(CAMusElement::Syllable);
         setMode(InsertMode);
     }
 }
@@ -3698,6 +3717,14 @@ void CAMainWin::on_uiInsertFM_toggled(bool checked)
 {
     if (checked) {
         musElementFactory()->setMusElementType(CAMusElement::FunctionMark);
+        setMode(InsertMode);
+    }
+}
+
+void CAMainWin::on_uiInsertChordName_toggled(bool checked)
+{
+    if (checked) {
+        musElementFactory()->setMusElementType(CAMusElement::ChordName);
         setMode(InsertMode);
     }
 }
@@ -3755,7 +3782,7 @@ void CAMainWin::on_uiPlayableLength_toggled(bool, int buttonId)
                 }
 
                 for (int j = 0; j < p->voice()->lyricsContextList().size(); j++) { // reposit syllables
-                    p->voice()->lyricsContextList().at(j)->repositSyllables();
+                    p->voice()->lyricsContextList().at(j)->repositionElements();
                 }
             }
         }
@@ -4880,6 +4907,12 @@ void CAMainWin::updateContextToolBar()
 */
 void CAMainWin::updateInsertToolBar()
 {
+    if (mode() == InsertMode) {
+        // Do not change any insert toolbar layout when in Insert mode. Otherwise the user couldn't leave the Insert mode,
+        // because the specific toggle button may be evicted.
+        return;
+    }
+
     if (currentSheet()) {
         uiNewContext->setVisible(true);
         uiInsertToolBar->show();
@@ -5705,14 +5738,14 @@ void CAMainWin::deleteSelection(CAScoreView* v, bool deleteSyllables, bool delet
 
                 p->voice()->remove(p, true);
                 for (int j = 0; j < p->voice()->lyricsContextList().size(); j++) {
-                    p->voice()->lyricsContextList().at(j)->repositSyllables();
+                    p->voice()->lyricsContextList().at(j)->repositionElements();
                 }
                 delete p;
             } else if ((*i)->musElementType() == CAMusElement::Syllable) {
                 if (deleteSyllables) {
                     CALyricsContext* lc = static_cast<CALyricsContext*>((*i)->context());
                     (*i)->context()->remove(*i); // actually removes the syllable if SHIFT is pressed
-                    lc->repositSyllables();
+                    lc->repositionElements();
                 } else {
                     static_cast<CASyllable*>(*i)->clear(); // only clears syllable's text
                 }
@@ -5720,7 +5753,7 @@ void CAMainWin::deleteSelection(CAScoreView* v, bool deleteSyllables, bool delet
                 if (deleteSyllables) {
                     CAChordNameContext* cc = static_cast<CAChordNameContext*>((*i)->context());
                     (*i)->context()->remove(*i); // actually removes the chord if SHIFT is pressed
-                    cc->repositChordNames();
+                    cc->repositionElements();
                 } else {
                     static_cast<CAChordName*>(*i)->clear(); // only clears the chord pitch/modifiers
                 }
@@ -5730,7 +5763,7 @@ void CAMainWin::deleteSelection(CAScoreView* v, bool deleteSyllables, bool delet
 
                 if (deleteSyllables && fbm->numbers().size() == numbersToDelete[fbm].size()) {
                     (*i)->context()->remove(*i); // actually removes the function if SHIFT is pressed
-                    fbc->repositFiguredBassMarks();
+                    fbc->repositionElements();
                 } else {
                     for (int j = 0; j < numbersToDelete[fbm].size(); j++) {
                         fbm->removeNumber(numbersToDelete[fbm][j]);
@@ -5740,7 +5773,7 @@ void CAMainWin::deleteSelection(CAScoreView* v, bool deleteSyllables, bool delet
                 if (deleteSyllables) {
                     CAFunctionMarkContext* fmc = static_cast<CAFunctionMarkContext*>((*i)->context());
                     (*i)->context()->remove(*i); // actually removes the function if SHIFT is pressed
-                    fmc->repositFunctions();
+                    fmc->repositionElements();
                 } else {
                     static_cast<CAFunctionMark*>(*i)->clear(); // only clears the function
                 }
@@ -5804,7 +5837,7 @@ void CAMainWin::pasteAt(const QPoint coords, CAScoreView* v)
                     /* Two cases:
 						 * - Some notes were copied together with the lyrics below them: in this case the linked voice would've already been pasted (as the context list is ordered top to bottom), so we find the new voice using voiceMap.
 						 * - Lyrics were copied without the notes. If currentContext is a staff, we'll use the current voice. Otherwise lyrics will not be pasted.
-						 */
+                         */
                     CAVoice* voice = voiceMap[static_cast<CALyricsContext*>(context)->associatedVoice()];
                     if (!voice && currentContext && currentContext->contextType() == CAContext::Staff)
                         voice = static_cast<CAStaff*>(currentContext)->voiceList()[(currentContext == v->currentContext()->context()) ? (uiVoiceNum->getRealValue() ? uiVoiceNum->getRealValue() - 1 : uiVoiceNum->getRealValue()) : 1]; // That is, if the currentContext is still the context that the user last clicked before pasting, use the current voice number. Otherwise, use the first voice.
@@ -5919,17 +5952,17 @@ void CAMainWin::pasteAt(const QPoint coords, CAScoreView* v)
                         // FIXME duplicated from CAMusElementFactory::configureNote.
                         if (n && staff->voiceList()[i]->lastNote() != static_cast<CANote*>(cloned)) {
                             for (CALyricsContext* context : staff->voiceList()[i]->lyricsContextList())
-                                context->addEmptySyllable(cloned->timeStart(), cloned->timeLength());
+                                context->insertEmptyElement(cloned->timeStart());
                             for (CAContext* context : currentSheet->contextList())
                                 if (context->contextType() == CAContext::FunctionMarkContext)
-                                    static_cast<CAFunctionMarkContext*>(context)->addEmptyFunction(cloned->timeStart(), cloned->timeLength());
+                                    static_cast<CAFunctionMarkContext*>(context)->insertEmptyElement(cloned->timeStart());
                         }
                     }
                     for (CALyricsContext* context : staff->voiceList()[i]->lyricsContextList())
-                        context->repositSyllables();
+                        context->repositionElements();
                     for (CAContext* context : currentSheet->contextList())
                         if (context->contextType() == CAContext::FunctionMarkContext)
-                            static_cast<CAFunctionMarkContext*>(context)->repositFunctions();
+                            static_cast<CAFunctionMarkContext*>(context)->repositionElements();
                 }
                 staff->synchronizeVoices();
             } else {

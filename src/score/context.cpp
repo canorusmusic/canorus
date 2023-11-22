@@ -110,3 +110,20 @@ CAContext::~CAContext()
 
 	\sa CAMusElement::clone(), CADocument::clone()
 */
+
+/*!
+    \fn CAContext::insertEmptyElement(int timeStart)
+    Inserts an empty dependent element (syllable, chord name, figured bass mark, function mark) to the context.
+    After the call the elements need to be repositioned manually (subsequent timeStarts and timeLengths will be out of place).
+    This function is usually called when initializing the dependent context or inserting a new note.
+
+    \sa CAContext::repositionElements()
+*/
+
+/*!
+    \fn CAContext::repositionElements()
+    Repositions the existing dependent elements (syllables, chord names, figured bass marks, function marks) by setting timeStart and timeLength
+    one by one according to the playable music it depends on. The order is preserved.
+
+    \sa CAContext::insertEmptyElement(int)
+*/

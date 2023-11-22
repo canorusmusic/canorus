@@ -23,13 +23,13 @@ public:
     CAMusElement* next(CAMusElement* elt);
     CAMusElement* previous(CAMusElement* elt);
     bool remove(CAMusElement* elt);
+    CAMusElement *insertEmptyElement(int timeStart);
+    void repositionElements();
 
     QList<CAChordName*>& chordNameList() { return _chordNameList; }
     CAChordName* chordNameAtTimeStart(int timeStart);
 
-    void repositChordNames();
     void addChordName(CAChordName*, bool replace = true);
-    void addEmptyChordName(int timeStart, int timeLength);
 
 private:
     QList<CAChordName*> _chordNameList;

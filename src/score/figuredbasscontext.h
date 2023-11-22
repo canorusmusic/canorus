@@ -23,13 +23,13 @@ public:
     CAMusElement* next(CAMusElement* elt);
     CAMusElement* previous(CAMusElement* elt);
     bool remove(CAMusElement* elt);
+    CAMusElement *insertEmptyElement(int timeStart);
+    void repositionElements();
 
     QList<CAFiguredBassMark*>& figuredBassMarkList() { return _figuredBassMarkList; }
     CAFiguredBassMark* figuredBassMarkAtTimeStart(int timeStart);
 
-    void repositFiguredBassMarks();
     void addFiguredBassMark(CAFiguredBassMark*, bool replace = true);
-    void addEmptyFiguredBassMark(int timeStart, int timeLength);
 
 private:
     QList<CAFiguredBassMark*> _figuredBassMarkList;

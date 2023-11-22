@@ -260,6 +260,11 @@ bool CAStaff::remove(CAMusElement* elt, bool updateSignTimes)
     return voiceList()[0]->remove(elt, updateSignTimes);
 }
 
+CAMusElement *CAStaff::insertEmptyElement(int timeStart)
+{
+    return nullptr; // N/A
+}
+
 /*!
 	Returns the first voice with the given \a name or Null, if such a voice doesn't exist.
 */

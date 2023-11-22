@@ -25,14 +25,13 @@ public:
     inline const QList<CAFunctionMark*>& functionMarkList() { return _functionMarkList; }
     QList<CAFunctionMark*> functionMarkAt(int timeStart);
     void addFunctionMark(CAFunctionMark* mark, bool replace = true);
-    void addEmptyFunction(int timeStart, int timeLength);
-
-    void repositFunctions();
 
     void clear();
     CAMusElement* next(CAMusElement* elt);
     CAMusElement* previous(CAMusElement* elt);
     bool remove(CAMusElement* elt);
+    CAMusElement *insertEmptyElement(int timeStart);
+    void repositionElements();
 
 private:
     QList<CAFunctionMark*> _functionMarkList;
