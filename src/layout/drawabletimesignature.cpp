@@ -64,10 +64,10 @@ void CADrawableTimeSignature::draw(QPainter* p, CADrawSettings s)
         // Draw C or C|, if needed.
         if (timeSignature()->timeSignatureType() == CATimeSignature::Classical) {
             if ((timeSignature()->beat() == 4) && (timeSignature()->beats() == 4)) {
-                p->drawText(s.x, qRound(s.y + 0.5 * height() * s.z), QString(CACanorus::fetaCodepoint("timesig.C44")));
+                p->drawText(s.x, qRound(s.y + 0.5 * height() * s.z), QString(QChar(CACanorus::fetaCodepoint("timesig.C44"))));
                 break;
             } else if ((timeSignature()->beat() == 2) && (timeSignature()->beats() == 2)) {
-                p->drawText(s.x, qRound(s.y + 0.5 * height() * s.z), QString(CACanorus::fetaCodepoint("timesig.C22")));
+                p->drawText(s.x, qRound(s.y + 0.5 * height() * s.z), QString(QChar(CACanorus::fetaCodepoint("timesig.C22"))));
                 break;
             }
         }

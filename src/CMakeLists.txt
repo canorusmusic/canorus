@@ -2,7 +2,7 @@
 
 INCLUDE(CheckLibraryExists)
 
-#FIND_PACKAGE(Qt5)
+#FIND_PACKAGE(Qt6)
 
 # This module is used to resolve the file dependencies
 # for QT files using an UI (User Interface) Qt file
@@ -64,31 +64,32 @@ ELSE(RUBY_INCLUDE_PATH AND NOT NO_RUBY)
 	SET(RUBY_LIBRARY "")
 ENDIF(RUBY_INCLUDE_PATH AND NOT NO_RUBY)
 
-set(Python_ADDITIONAL_VERSIONS 3.4) # Required for Ubuntu LTS 14.04
+#set(Python_ADDITIONAL_VERSIONS 3.4) # Required for Ubuntu LTS 14.04
 
-FIND_PACKAGE(PythonLibs 3)
+FIND_PACKAGE(Python3 COMPONENTS Interpreter Development REQUIRED) # Required for Qt6
 
-IF(PYTHON_INCLUDE_DIRS AND NOT NO_PYTHON)
-	MESSAGE("Python Library and Development files found. Python extensions enabled.")
-	# PYTHON_LIBRARY points to C:\PythonXY\pythonXY.dll
+IF(Python3_INCLUDE_DIRS AND NOT NO_PYTHON)
+	MESSAGE("Python 3 Library and Development files found. Python extensions enabled.")
+	# Python3_LIBRARY points to C:\PythonXY\pythonXY.dll
+
+	# Approximate old-style PYTHON_LIB computation (optional)
+	get_filename_component(PYTHON_LIB_DIR "${Python3_LIBRARY}" DIRECTORY)
 	# PYTHON_LIB should point to C:\PythonXY\Lib
-	STRING(REGEX REPLACE "([^ ]+)[/\\].*" "\\1" PYTHON_LIB "${PYTHON_LIBRARY}") # remove pythonXY.dll
-	STRING(REGEX REPLACE "\\\\" "/" PYTHON_LIB "${PYTHON_LIB}")  # Replace back slashes to slashes
+	#STRING(REGEX REPLACE "([^ ]+)[/\\].*" "\\1" PYTHON_LIB "${Python3_LIBRARY}") # remove pythonXY.dll
+	#STRING(REGEX REPLACE "\\\\" "/" PYTHON_LIB "${PYTHON_LIB}")  # Replace back slashes to slashes
 	SET( PYTHON_LIB "${PYTHON_LIB}/Lib/" ) # add /Lib/
 
 	# Needed on some Linux distros (SuSE, Gentoo) to prevent linking issues (openpty, forkpty) 
 	CHECK_LIBRARY_EXISTS(util openpty "" HAVE_OPENPTY)
-	IF("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
-		IF (HAVE_OPENPTY)
-			SET(PYTHON_LIBRARY ${PYTHON_LIBRARY} util)
-		ENDIF (HAVE_OPENPTY)
-	ENDIF("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
+	if (UNIX AND HAVE_OPENPTY)
+		list(APPEND Python3_LIBRARIES util)
+	endif()
 	
 	SET(USE_PYTHON True)
-ELSE(PYTHON_INCLUDE_DIRS AND NOT NO_PYTHON)
-	MESSAGE("Python Library and Development files *not* found. Python extensions disabled!")
-	SET(PYTHON_LIBRARY "")
-ENDIF(PYTHON_INCLUDE_DIRS AND NOT NO_PYTHON)
+ELSE(Python3_INCLUDE_DIRS AND NOT NO_PYTHON)
+	MESSAGE("Python 3 Library and Development files *not* found. Python extensions disabled!")
+	SET(Python3_LIBRARY "")
+ENDIF(Python3_INCLUDE_DIRS AND NOT NO_PYTHON)
 
 ##################################
 # Poppler detection for printing #
@@ -175,9 +176,9 @@ SET(Canorus_Gui_MOCs	# List of classes which Qt needs to produce MOCs for them (
 	scorectl/keysignaturectl.h
 )
 
-IF(Qt5WebEngineWidgets_LIBRARIES)
+IF(Qt6WebEngineWidgets_LIBRARIES)
 	SET(Canorus_Gui_MOCs ${Canorus_Gui_MOCs} widgets/helpbrowser.h)
-ENDIF(Qt5WebEngineWidgets_LIBRARIES)
+ENDIF(Qt6WebEngineWidgets_LIBRARIES)
 
 SET(Canorus_Core_MOCs # MOCs compiled into scripting library as well
 	import/import.h
@@ -201,7 +202,7 @@ SET(Canorus_Core_MOCs # MOCs compiled into scripting library as well
 )
 
 ################
-# Qt5 settings #
+# Qt6 settings #
 ################
 # Enable needed Qt modules for Canorus
 SET(QT_USE_QTXML True) # Save/Load
@@ -217,20 +218,20 @@ SET(QT_USE_QTSVG True) # Icons, Images etc.
 # The result of it is stored into Canorus_Resrcs_Srcs
 # variable. This has to be included later in the
 # add_executable line.
-QT5_ADD_RESOURCES(Canorus_Resrcs_Srcs ${Canorus_Resrcs})
+QT6_ADD_RESOURCES(Canorus_Resrcs_Srcs ${Canorus_Resrcs})
 
 # This scripts runs the user interface compiler uic.
 # The result of it is stored into Canorus_UIC_Srcs
 # variable. This has to be included later in the
 # add_executable line.
-QT5_WRAP_UI(Canorus_UIC_Srcs ${Canorus_UIs})
+QT6_WRAP_UI(Canorus_UIC_Srcs ${Canorus_UIs})
 
 # This script runs the meta object compiler moc.
 # The result of it is stored into Canorus_Gui_MOC_Srcs and Canorus_Core_MOC_Srcs
 # variable. This has to be included later in the
 # add_executable line.
-QT5_WRAP_CPP(Canorus_Gui_MOC_Srcs ${Canorus_Gui_MOCs})
-QT5_WRAP_CPP(Canorus_Core_MOC_Srcs ${Canorus_Core_MOCs})
+QT6_WRAP_CPP(Canorus_Gui_MOC_Srcs ${Canorus_Gui_MOCs})
+QT6_WRAP_CPP(Canorus_Core_MOC_Srcs ${Canorus_Core_MOCs})
 
 #########################
 # List of other sources #
@@ -328,9 +329,9 @@ SET(Canorus_Widget_Srcs  	# Sources for all custom widgets present in Canorus
 	widgets/tabwidget.cpp
 )
 
-IF(Qt5WebEngineWidgets_LIBRARIES)
+IF(Qt6WebEngineWidgets_LIBRARIES)
 	SET(Canorus_Widget_Srcs ${Canorus_Widget_Srcs} widgets/helpbrowser.cpp)
-ENDIF(Qt5WebEngineWidgets_LIBRARIES)
+ENDIF(Qt6WebEngineWidgets_LIBRARIES)
 
 SET(Canorus_Ui_Srcs		# Implementations of widgets that have their own .ui qt-designer files
 	ui/mainwin.cpp
@@ -538,11 +539,11 @@ IF(APPLE)
 	SET(Canorus_OSX_Info ${CANORUS_OSX_DIR}/files/Info.plist)
 
 	SET(Canorus_OSX_Qt_libs
-		${QT_QTCORE_LIBRARY}/Versions/5/QtCore
-		${QT_QTGUI_LIBRARY}/Versions/5/QtGui
-		${QT_QTWIDGETS_LIBRARY}/Versions/5/QtWidgets
-		${QT_QTXML_LIBRARY}/Versions/5/QtXml
-		${QT_QTSVG_LIBRARY}/Versions/5/QtSvg
+		${QT_QTCORE_LIBRARY}/Versions/6/QtCore
+		${QT_QTGUI_LIBRARY}/Versions/6/QtGui
+		${QT_QTWIDGETS_LIBRARY}/Versions/6/QtWidgets
+		${QT_QTXML_LIBRARY}/Versions/6/QtXml
+		${QT_QTSVG_LIBRARY}/Versions/6/QtSvg
 		)
 ENDIF(APPLE)
 
@@ -605,15 +606,15 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
 # These lines add the include paths of the Qt
 # directory to the compiler include paths
-INCLUDE_DIRECTORIES(${Qt5Core_INCLUDE_DIRS})
-INCLUDE_DIRECTORIES(${Qt5Gui_INCLUDE_DIRS})
-INCLUDE_DIRECTORIES(${Qt5Svg_INCLUDE_DIRS})
-INCLUDE_DIRECTORIES(${Qt5Widgets_INCLUDE_DIRS})
-INCLUDE_DIRECTORIES(${Qt5Xml_INCLUDE_DIRS})
-INCLUDE_DIRECTORIES(${Qt5PrintSupport_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(${Qt6Core_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(${Qt6Gui_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(${Qt6Svg_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(${Qt6Widget5s_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(${Qt6Xml_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(${Qt6PrintSupport_INCLUDE_DIRS})
 
 # FIX: Qt was built with -reduce-relocations
-if (Qt5_POSITION_INDEPENDENT_CODE)
+if (Qt6_POSITION_INDEPENDENT_CODE)
 	SET(CMAKE_POSITION_INDEPENDENT_CODE ON)
 endif()
 
@@ -634,12 +635,12 @@ IF(USE_RUBY)
 		OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}
 		SOURCES ${Canorus_Swig_Srcs} ${CMAKE_CURRENT_SOURCE_DIR}/scripting/canorusruby.i
 	)
-	SWIG_LINK_LIBRARIES(CanorusRuby ${RUBY_LIBRARY} Qt5::Widgets Qt5::Core Qt5::Gui Qt5::Svg Qt5::Xml Qt5::PrintSupport)
+	SWIG_LINK_LIBRARIES(CanorusRuby ${RUBY_LIBRARY} Qt6::Widgets Qt6::Core Qt6::Core5Compat Qt6::Gui Qt6::Svg Qt6::Xml Qt6::PrintSupport)
 	SET_TARGET_PROPERTIES( ${SWIG_MODULE_CanorusRuby_REAL_NAME} PROPERTIES COMPILE_FLAGS "-DSWIGCPP" )
 ENDIF(USE_RUBY)
 
 IF(USE_PYTHON)
-	INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIRS})
+	INCLUDE_DIRECTORIES(${Python3_INCLUDE_DIRS})
 	SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/scripting/canoruspython.i PROPERTIES CPLUSPLUS ON)
 	SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/scripting/canoruspython.i PROPERTIES SWIG_FLAGS "-threads")
 	
@@ -651,7 +652,7 @@ IF(USE_PYTHON)
         OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}
 		SOURCES ${Canorus_Swig_Srcs} ${CMAKE_CURRENT_SOURCE_DIR}/scripting/canoruspython.i
 	)
-	SWIG_LINK_LIBRARIES(CanorusPython ${PYTHON_LIBRARY} Qt5::Widgets Qt5::Core Qt5::Gui Qt5::Svg Qt5::Xml Qt5::PrintSupport)
+	SWIG_LINK_LIBRARIES(CanorusPython ${Python3_LIBRARY} Qt6::Widgets Qt6::Core Qt6::Core5Compat Qt6::Gui Qt6::Svg Qt6::Xml Qt6::PrintSupport)
 	SET_TARGET_PROPERTIES( ${SWIG_MODULE_CanorusPython_REAL_NAME} PROPERTIES COMPILE_FLAGS "-DSWIGCPP" )
 	set_source_files_properties(${CANORUS_PYTHON_WRAP_CXX} PROPERTIES COMPILE_FLAGS -Wno-error)
 ENDIF(USE_PYTHON)
@@ -697,9 +698,7 @@ ENDIF(USE_PYTHON)
 # command. Never remove that line :-)
 # Add ${QT_QTTEST_LIBRARY} below to add the Qt Test library as well
 # Add ${POPPLERQT4_LIBRARY} ${POPPLER_LIBRARY} to reactivate poppler libraries
-TARGET_LINK_LIBRARIES(canorus Qt5::Widgets Qt5::Core Qt5::Gui Qt5::Svg Qt5::Xml Qt5::PrintSupport ${Qt5WebEngineWidgets_LIBRARIES} ${RUBY_LIBRARY} ${PYTHON_LIBRARY} z pthread )
-# Duma leads to a crash on libfontconfig with Ubuntu (10.04/12.04)
-# duma )
+TARGET_LINK_LIBRARIES(canorus Qt6::Widgets Qt6::Core Qt6::Core5Compat Qt6::Gui Qt6::Svg Qt6::Xml Qt6::PrintSupport ${Qt6WebEngineWidgets_LIBRARIES} ${RUBY_LIBRARY} ${Python3_LIBRARY} z pthread )
 
 ############################
 # RtMIDI Library additions #
@@ -742,16 +741,16 @@ ENDIF(MINGW)
 ###############
 # Translation #
 ###############
-# Do not use qt5_create_translation since make clean will delete all previous
+# Do not use qt6_create_translation since make clean will delete all previous
 # .ts files. Use custom command instead:
-#qt5_create_translation(Canorus_Translation_Bins ${Canorus_UIC_Srcs} ${Canorus_Srcs} lang/template.ts)
+#qt6_create_translation(Canorus_Translation_Bins ${Canorus_UIC_Srcs} ${Canorus_Srcs} lang/template.ts)
 ADD_CUSTOM_TARGET(tr
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 	DEPENDS ${Canorus_UIC_Srcs}
-	COMMAND ${Qt5_LUPDATE_EXECUTABLE} -noobsolete ${Canorus_UIC_Srcs} ${Canorus_Srcs} -ts ${Canorus_Translation_Srcs} lang/template.ts
+	COMMAND ${Qt6_LUPDATE_EXECUTABLE} -noobsolete ${Canorus_UIC_Srcs} ${Canorus_Srcs} -ts ${Canorus_Translation_Srcs} lang/template.ts
 )
 set_source_files_properties(${Canorus_Translation_Srcs} PROPERTIES OUTPUT_LOCATION ${CMAKE_CURRENT_BINARY_DIR}/lang)
-qt5_add_translation(Canorus_Translation_Bins ${Canorus_Translation_Srcs})
+qt6_add_translation(Canorus_Translation_Bins ${Canorus_Translation_Srcs})
 
 ADD_CUSTOM_TARGET(canorus_qm DEPENDS ${Canorus_Translation_Bins})
 ADD_DEPENDENCIES(canorus canorus_qm)
@@ -805,14 +804,14 @@ INSTALL( DIRECTORY ${Canorus_Examples} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CA
 
 IF(MINGW)
 	# Install Qt libs
-        INSTALL( FILES ${QT_BIN_DIR}/Qt5Core.dll ${QT_BIN_DIR}/Qt5Gui.dll ${QT_BIN_DIR}/Qt5Widgets.dll ${QT_BIN_DIR}/Qt5Svg.dll ${QT_BIN_DIR}/Qt5Xml.dll ${QT_BIN_DIR}/Qt5Sql.dll ${QT_BIN_DIR}/Qt5Network.dll ${QT_BIN_DIR}/Qt5PrintSupport.dll DESTINATION ${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_BIN_DIR} )
+        INSTALL( FILES ${QT_BIN_DIR}/Qt6Core.dll ${QT_BIN_DIR}/Qt6Gui.dll ${QT_BIN_DIR}/Qt6Widgets.dll ${QT_BIN_DIR}/Qt6Svg.dll ${QT_BIN_DIR}/Qt6Xml.dll ${QT_BIN_DIR}/Qt6Sql.dll ${QT_BIN_DIR}/Qt6Network.dll ${QT_BIN_DIR}/Qt6PrintSupport.dll DESTINATION ${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_BIN_DIR} )
 	
 	# Install qsvg plugin for rendering SVG icons
-	get_target_property(QSvgIcon_loc Qt5::QSvgIconPlugin LOCATION)
+	get_target_property(QSvgIcon_loc Qt6::QSvgIconPlugin LOCATION)
 	INSTALL( FILES ${QSvgIcon_loc} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_BIN_DIR}/iconengines" )
 	
 	# Install qwindows plugin for Microsoft Windows integration
-	get_target_property(QWindows_loc Qt5::QWindowsIntegrationPlugin LOCATION)
+	get_target_property(QWindows_loc Qt6::QWindowsIntegrationPlugin LOCATION)
 	INSTALL( FILES ${QWindows_loc} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_BIN_DIR}/platforms" )
 	
 	# Install dlls
@@ -825,7 +824,7 @@ IF(MINGW)
 	
 	# Install Python libs
 	IF(USE_PYTHON)
-		INSTALL( FILES ${PYTHON_LIBRARY} DESTINATION ${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_BIN_DIR} )             # PythonXY.dll
+		INSTALL( FILES ${Python3_LIBRARY} DESTINATION ${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_BIN_DIR} )             # PythonXY.dll
 		INSTALL( DIRECTORY ${PYTHON_LIB} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_BIN_DIR}/pythonLib" ) # Python .py files
 	ENDIF(USE_PYTHON)
 	
@@ -849,7 +848,7 @@ IF(APPLE)
 	# Install Python libs
 	IF(USE_PYTHON)
 		# OSX build requires a "framework" build of Python
-		# in CMakeCache.txt PYTHON_LIBRARY is not a file but '-framework Python'
+		# in CMakeCache.txt Python3_LIBRARY is not a file but '-framework Python'
 		#SET(OSX_PYTHON_LIB /Library/Frameworks/Python.framework/Versions/Current/Python)		
 		#INSTALL(FILES ${OSX_PYTHON_LIB} DESTINATION ${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_LIB_DIR})
 	ENDIF(USE_PYTHON)

@@ -68,8 +68,8 @@ public:
     CAScoreView(QWidget* parent = nullptr);
     CAScoreView(CASheet* sheet, QWidget* parent = nullptr);
     virtual ~CAScoreView();
-    CAScoreView* clone();
-    CAScoreView* clone(QWidget* parent);
+    CAScoreView* clone() override;
+    CAScoreView* clone(QWidget* parent) override;
     inline CASheet* sheet() { return _sheet; }
     inline void setSheet(CASheet* sheet) { _sheet = sheet; }
 
@@ -169,7 +169,7 @@ public:
     //////////////////////////////////////////////
     // Scene appearance, properties and actions //
     //////////////////////////////////////////////
-    void rebuild();
+    void rebuild() override;
     void setMouseTracking(bool); // reimplemented!
     inline int drawableWidth() { return _canvas->width(); }
     inline int drawableHeight() { return _canvas->height(); }
@@ -264,19 +264,19 @@ public:
     void updateHelpers(); // method for updating shadow notes, syllable edits and other post-engrave elements coordinates and sizes when zoom level is changed etc.
 
 private slots:
-    void mousePressEvent(QMouseEvent* e);
-    void mouseMoveEvent(QMouseEvent* e);
-    void mouseReleaseEvent(QMouseEvent* e);
-    void wheelEvent(QWheelEvent* e);
-    void keyPressEvent(QKeyEvent* e);
+    void mousePressEvent(QMouseEvent* e) override;
+    void mouseMoveEvent(QMouseEvent* e) override;
+    void mouseReleaseEvent(QMouseEvent* e) override;
+    void wheelEvent(QWheelEvent* e) override;
+    void keyPressEvent(QKeyEvent* e) override;
 
     void HScrollBarEvent(int val);
     void VScrollBarEvent(int val);
 
-    void resizeEvent(QResizeEvent* e);
-    void paintEvent(QPaintEvent* p);
-    void leaveEvent(QEvent* e);
-    void enterEvent(QEvent* e);
+    void resizeEvent(QResizeEvent* e) override;
+    void paintEvent(QPaintEvent* p) override;
+    void leaveEvent(QEvent* e) override;
+    void enterEvent(QEnterEvent* e) override;
     void on_animationTimer_timeout();
     void on_clickTimer_timeout();
 
@@ -291,7 +291,7 @@ signals:
     void selectionChanged();
 
 protected:
-    bool event(QEvent* event);
+    bool event(QEvent* event) override;
 
 private:
     void initScoreView(CASheet* s);

@@ -11,7 +11,6 @@
 #else
 #include "interface/plugins_swig.h"
 #endif
-#include "interface/plugin.h"
 #include "interface/pluginaction.h"
 #include "interface/pluginmanager.h"
 
@@ -177,7 +176,7 @@ bool CAPluginManager::enablePlugin(CAPlugin* plugin, CAMainWin* mainWin)
     // plugin wasn't enabled before, add its actions to local list
     QList<QString> actions = plugin->actionList();
     for (int i = 0; i < actions.size(); i++) {
-        _actionMap.insertMulti(actions[i], plugin);
+        _actionMap.insert(actions[i], plugin);
     }
 
     plugin->setEnabled(true);
@@ -215,7 +214,7 @@ bool CAPluginManager::disablePlugin(CAPlugin* plugin)
             }
         }
         for (int j = 0; j < plugList.size(); j++) // restore the hash - add deleted non-disabled actions of the other plugins back to the hash
-            _actionMap.insertMulti(actions[i], plugList[j]);
+            _actionMap.insert(actions[i], plugList[j]);
     }
 
     return res;

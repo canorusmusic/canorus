@@ -15,7 +15,7 @@
 class QString;
 
 // One action based on QAction, Midi and QString. Contains all
-// information (including description) for one control command
+// information (including description) for one control commandmen
 class CASingleAction {
 public:
     // Constructor / Desctructor

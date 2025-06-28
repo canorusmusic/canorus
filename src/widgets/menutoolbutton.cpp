@@ -6,7 +6,6 @@
 */
 
 #include <QApplication>
-#include <QDesktopWidget>
 #include <QMainWindow>
 #include <QStyleOptionToolButton>
 #include <QStylePainter>
@@ -75,7 +74,7 @@ CAMenuToolButton::CAMenuToolButton(QString title, int numIconsRow, QWidget* pare
     // Layout for visual group box
     _boxLayout = new QGridLayout(_groupBox);
     _boxLayout->setSpacing(spacing());
-    _boxLayout->setMargin(layoutMargin());
+    _boxLayout->setContentsMargins(layoutMargin(), layoutMargin(), layoutMargin(), layoutMargin());
     setSizePolicy(boxSizePolicy);
 
     // Abstract group for mutual exclusive toggle
@@ -177,7 +176,7 @@ void CAMenuToolButton::wheelEvent(QWheelEvent* event)
 {
     QList<QAbstractButton*> buttonList = _buttonGroup->buttons();
     QAbstractButton* button = _buttonGroup->button(currentId());
-    int newIdx = buttonList.indexOf(button) + (event->delta() > 0 ? -1 : 1);
+    int newIdx = buttonList.indexOf(button) + (event->angleDelta().y() > 0 ? -1 : 1);
 
     if (newIdx == buttonList.size())
         newIdx = 0;

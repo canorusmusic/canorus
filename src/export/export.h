@@ -10,6 +10,7 @@
 
 #include "core/file.h"
 #include <QString>
+#include <climits>
 
 class QTextStream;
 class CADocument;

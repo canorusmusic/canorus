@@ -118,8 +118,10 @@ void CACanorus::initTranslations()
 
     if (QFileInfo(translationFile).exists()) {
         CACanorus::_translator = std::unique_ptr<QTranslator>(new QTranslator);
-        CACanorus::_translator->load(QFileInfo(translationFile).absoluteFilePath());
-        static_cast<QApplication*>(QApplication::instance())->installTranslator(CACanorus::_translator.get());
+        bool res = CACanorus::_translator->load(QFileInfo(translationFile).absoluteFilePath());
+        if (res) {
+            static_cast<QApplication*>(QApplication::instance())->installTranslator(CACanorus::_translator.get());
+        }
     }
 
     if (QLocale::system().language() == QLocale::Hebrew) { /// \todo add Arabic, etc.

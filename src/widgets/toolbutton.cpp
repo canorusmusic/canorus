@@ -8,7 +8,6 @@
 #include "widgets/toolbutton.h"
 #include "ui/mainwin.h"
 
-#include <QDesktopWidget>
 #include <QMainWindow>
 #include <QMouseEvent>
 #include <QScreen>
@@ -66,7 +65,7 @@ void CAToolButton::hideButtons()
 void CAToolButton::mousePressEvent(QMouseEvent* e)
 {
     QStyleOptionToolButton opt;
-    opt.init(this);
+    opt.initFrom(this);
     opt.subControls |= QStyle::SC_ToolButtonMenu;
     opt.features |= QStyleOptionToolButton::Menu;
 
