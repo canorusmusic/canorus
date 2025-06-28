@@ -298,5 +298,5 @@ bool CAPlugin::callAction(CAPluginAction* action, CAMainWin* mainWin, CADocument
 void CAPlugin::addAction(CAPluginAction* action)
 {
     if (!_actionMap.values(action->onAction()).contains(action))
-        _actionMap.insertMulti(action->onAction(), action);
+        _actionMap.insert(action->onAction(), action);
 }

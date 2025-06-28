@@ -218,7 +218,7 @@ QByteArray CAMidiExport::textEvent(int time, QString s)
     tc.append(static_cast<char>(MIDI_CTL_EVENT));
     tc.append(META_TEXT);
     tc.append(variableLengthValue(s.length()));
-    tc.append(s);
+    tc.append(s.toUtf8());
     return tc;
 }
 
@@ -244,7 +244,7 @@ void CAMidiExport::exportDocumentImpl(CADocument* doc)
     CAPlayback* _playback = new CAPlayback(sheet, this);
     _playback->run();
 
-    int count = 0;
+    // int count = 0; // set but unused
     for (int c = 0; c < doc->sheetList()[0]->contextList().size(); ++c) {
         switch (sheet->contextList()[c]->contextType()) {
         case CAContext::Staff: {
@@ -252,7 +252,7 @@ void CAMidiExport::exportDocumentImpl(CADocument* doc)
             CAStaff* staff = static_cast<CAStaff*>(sheet->contextList()[c]);
             for (int v = 0; v < staff->voiceList().size(); ++v) {
                 setCurVoice(staff->voiceList()[v]);
-                count++;
+                // count++;
                 //std::cout << "Hallo  " << c << " " << v << "\n" << std::endl;
             }
             break;
@@ -294,7 +294,7 @@ void CAMidiExport::exportSheetImpl(CASheet* sheet)
     CAPlayback* _playback = new CAPlayback(sheet, this);
     _playback->run();
 
-    int count = 0;
+    // int count = 0; // set but unused
     for (int c = 0; c < sheet->contextList().size(); ++c) {
         switch (sheet->contextList()[c]->contextType()) {
         case CAContext::Staff: {
@@ -302,7 +302,7 @@ void CAMidiExport::exportSheetImpl(CASheet* sheet)
             CAStaff* staff = static_cast<CAStaff*>(sheet->contextList()[c]);
             for (int v = 0; v < staff->voiceList().size(); ++v) {
                 setCurVoice(staff->voiceList()[v]);
-                count++;
+                // count++;
                 //std::cout << "Hallo  " << c << " " << v << "\n" << std::endl;
             }
             break;

@@ -173,7 +173,7 @@ void CADrawableNote::draw(QPainter* p, CADrawSettings s)
 
     // Draw notehead
     s.y += height() * s.z / 2;
-    p->drawText(s.x, s.y, QString(CACanorus::fetaCodepoint(_noteHeadGlyphName)));
+    p->drawText(s.x, s.y, QString(QChar(CACanorus::fetaCodepoint(_noteHeadGlyphName))));
 
     if (note()->noteLength().musicLength() >= CAPlayableLength::Half) {
         // Draw stem and flag
@@ -185,14 +185,14 @@ void CADrawableNote::draw(QPainter* p, CADrawSettings s)
             s.x += qRound(_noteHeadWidth * s.z); // increase X-offset before drawing the stem
             p->drawLine(s.x, qRound(s.y - 1 * s.z), s.x, s.y - qRound(_stemLength * s.z));
             if (note()->noteLength().musicLength() >= CAPlayableLength::Eighth) {
-                p->drawText(qRound(s.x + 0.6 * s.z), qRound(s.y - _stemLength * s.z), QString(CACanorus::fetaCodepoint(_flagUpGlyphName)));
+                p->drawText(qRound(s.x + 0.6 * s.z), qRound(s.y - _stemLength * s.z), QString(QChar(CACanorus::fetaCodepoint(_flagUpGlyphName))));
                 s.x += qRound(6 * s.z); // additional X-offset for dots because of the flag on the right
             }
         } else {
             s.x += qRound(0.6 * s.z);
             p->drawLine(s.x, qRound(s.y + 1 * s.z), s.x, s.y + qRound(_stemLength * s.z));
             if (note()->noteLength().musicLength() >= CAPlayableLength::Eighth) {
-                p->drawText(qRound(s.x + 0.4 * s.z), qRound(s.y + (_stemLength + 5) * s.z), QString(CACanorus::fetaCodepoint(_flagDownGlyphName)));
+                p->drawText(qRound(s.x + 0.4 * s.z), qRound(s.y + (_stemLength + 5) * s.z), QString(QChar(CACanorus::fetaCodepoint(_flagDownGlyphName))));
             }
             s.x += qRound(_noteHeadWidth * s.z); // increase X-offset after drawing the stem
         }

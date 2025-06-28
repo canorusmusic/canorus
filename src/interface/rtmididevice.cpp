@@ -103,7 +103,7 @@ void rtMidiInCallback(double, std::vector<unsigned char>* message, void*)
 {
     (void)message; // Only used in with SWIGCPP
 #ifndef SWIGCPP
-    emit CACanorus::midiDevice()->midiInEvent(QVector<unsigned char>::fromStdVector(*message));
+    emit CACanorus::midiDevice()->midiInEvent(QVector<unsigned char>(message->begin(), message->end()));
 #else
         // call scripting callback?
 #endif
@@ -174,7 +174,7 @@ CARtMidiDevice::~CARtMidiDevice()
 */
 void CARtMidiDevice::send(QVector<unsigned char> message, int)
 {
-    std::vector<unsigned char> messageVector = message.toStdVector();
+    std::vector<unsigned char> messageVector(message.begin(), message.end());
     if (_outOpen)
         _out->sendMessage(&messageVector);
 }

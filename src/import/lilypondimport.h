@@ -15,12 +15,12 @@
 #include "score/barline.h"
 #include "score/clef.h"
 #include "score/diatonicpitch.h"
+// NOLINTNEXTLINE(modernize-deprecated-headers, misc-unused-include)
 #include "score/keysignature.h"
 #include "score/lyricscontext.h"
 #include "score/playablelength.h"
 #include "score/rest.h"
 #include "score/syllable.h"
-#include "score/timesignature.h"
 #include "score/voice.h"
 
 #include "import/import.h"
@@ -47,9 +47,9 @@ public:
 private:
     void initLilyPondImport();
 
-    static const QRegExp WHITESPACE_DELIMITERS;
-    static const QRegExp SYNTAX_DELIMITERS;
-    static const QRegExp DELIMITERS;
+    static const QRegularExpression WHITESPACE_DELIMITERS;
+    static const QRegularExpression SYNTAX_DELIMITERS;
+    static const QRegularExpression DELIMITERS;
 
     // Internal time signature
     struct CATime {

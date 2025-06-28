@@ -10,6 +10,7 @@
 
 #include <QAction>
 #include <QShortcut>
+#include <QMenu>
 
 class QString;
 

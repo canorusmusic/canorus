@@ -18,6 +18,7 @@
 #include <QDialog>
 #include <QList>
 #include <QStringList>
+#include <QMenu>
 
 class QTableWidget;
 class QTableWidgetItem;
@@ -40,7 +41,7 @@ public:
 
     // Constructor
     // Parameters are standard QWidget parameters
-    CAActionsEditor(QWidget* parent = nullptr, Qt::WindowFlags f = nullptr);
+    CAActionsEditor(QWidget* parent = nullptr, Qt::WindowFlags f = Qt::WindowType::Widget);
     // Destructor
     ~CAActionsEditor();
 

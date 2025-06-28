@@ -65,19 +65,19 @@ void CADrawableAccidental::draw(QPainter* p, CADrawSettings s)
 
     switch (_accs) {
     case 0:
-        p->drawText(s.x, s.y + qRound(height() / 2 * s.z), QString(CACanorus::fetaCodepoint("accidentals.natural")));
+        p->drawText(s.x, s.y + qRound(height() / 2 * s.z), QString(QChar(CACanorus::fetaCodepoint("accidentals.natural"))));
         break;
     case 1:
-        p->drawText(s.x, s.y + qRound((height() / 2 + 0.3) * s.z), QString(CACanorus::fetaCodepoint("accidentals.sharp")));
+        p->drawText(s.x, s.y + qRound((height() / 2 + 0.3) * s.z), QString(QChar(CACanorus::fetaCodepoint("accidentals.sharp"))));
         break;
     case -1:
-        p->drawText(s.x, s.y + qRound((height() / 2 + 5) * s.z), QString(CACanorus::fetaCodepoint("accidentals.flat")));
+        p->drawText(s.x, s.y + qRound((height() / 2 + 5) * s.z), QString(QChar(CACanorus::fetaCodepoint("accidentals.flat"))));
         break;
     case 2:
-        p->drawText(s.x, s.y + qRound(height() / 2 * s.z), QString(CACanorus::fetaCodepoint("accidentals.doublesharp")));
+        p->drawText(s.x, s.y + qRound(height() / 2 * s.z), QString(QChar(CACanorus::fetaCodepoint("accidentals.doublesharp"))));
         break;
     case -2:
-        p->drawText(s.x, s.y + qRound((height() / 2 + 5) * s.z), QString(CACanorus::fetaCodepoint("accidentals.flatflat")));
+        p->drawText(s.x, s.y + qRound((height() / 2 + 5) * s.z), QString(QChar(CACanorus::fetaCodepoint("accidentals.flatflat"))));
         break;
     }
 }

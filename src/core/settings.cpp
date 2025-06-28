@@ -461,7 +461,7 @@ void CASettings::setActionList(QList<CASingleAction*>& oActionList)
 */
 void CASettings::addSingleAction(CASingleAction& oSingleAction)
 {
-    qWarning() << "CASettings::addSingleAction" << endl;
+    qWarning() << "CASettings::addSingleAction" << Qt::endl;
 #ifdef COPY_ACTIONLIST_ELEMS_MANUALLY
     CASingleAction* pActionEntry = new CASingleAction(0); // parent ?
     pActionEntry->setCommandName(oSingleAction.getCommandName());
@@ -480,7 +480,7 @@ void CASettings::addSingleAction(CASingleAction& oSingleAction)
 #else
     _oActionList.append(&oSingleAction);
 #endif
-    qWarning() << "New size is " << _oActionList.size() << endl;
+    qWarning() << "New size is " << _oActionList.size() << Qt::endl;
 }
 
 /*!

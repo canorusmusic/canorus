@@ -1791,7 +1791,7 @@ void CAMainWin::scoreViewMousePress(QMouseEvent* e, const QPoint coords)
             // debug
             QString debugStr;
             QTextStream outStr(&debugStr);
-            outStr << "drawableMusElement: " << dElt << ", x,y=" << dElt->xPos() << "," << dElt->yPos() << ", w,h=" << dElt->width() << "," << dElt->height() << ", dContext=" << dElt->drawableContext() << endl;
+            outStr << "drawableMusElement: " << dElt << ", x,y=" << dElt->xPos() << "," << dElt->yPos() << ", w,h=" << dElt->width() << "," << dElt->height() << ", dContext=" << dElt->drawableContext() << Qt::endl;
             outStr << "musElement: " << elt << ", timeStart=" << elt->timeStart() << ", timeEnd=" << elt->timeEnd() << ", context=" << elt->context();
             if (elt->isPlayable()) {
                 outStr << ", voice=" << (static_cast<CAPlayable*>(elt))->voice() << ", voiceNr=" << (static_cast<CAPlayable*>(elt))->voice()->voiceNumber() << ", idxInVoice=" << (static_cast<CAPlayable*>(elt))->voice()->musElementList().indexOf(elt);
@@ -1807,7 +1807,7 @@ void CAMainWin::scoreViewMousePress(QMouseEvent* e, const QPoint coords)
             if (elt->musElementType() == CAMusElement::Slur) {
                 outStr << "noteStart=" << static_cast<CASlur*>(elt)->noteStart() << ", noteEnd=" << static_cast<CASlur*>(elt)->noteStart();
             }
-            outStr << endl;
+            outStr << Qt::endl;
             qDebug().noquote() << debugStr;
         }
 
@@ -2114,16 +2114,16 @@ void CAMainWin::scoreViewMouseRelease(QMouseEvent* e, QPoint coords)
                         musEltList.removeAt(j--);
                 v->addToSelection(musEltList);
             }
-        } else {
+        } // else {
             // single element or none selected
-            CADrawableMusElement* dElt = nullptr;
-            CAMusElement* elt = nullptr;
+            // CADrawableMusElement* dElt = nullptr;
+            // CAMusElement* elt = nullptr;
 
-            if (v->selection().size() == 1) {
-                dElt = v->selection().front();
-                elt = dElt->musElement();
-            }
-        }
+            // if (v->selection().size() == 1) {
+                // dElt = v->selection().front(); // set but unused variable
+                // elt = dElt->musElement(); // set but unused variable
+            // }
+        // }
         v->repaint();
     }
 }
@@ -2141,27 +2141,29 @@ void CAMainWin::scoreViewWheel(QWheelEvent* e, QPoint coords)
 
     //int val;
     switch (e->modifiers()) {
-    case Qt::NoModifier: //scroll horizontally
-        sv->setWorldX(sv->worldX() - (0.5 * e->delta()) / sv->zoom(), CACanorus::settings()->animatedScroll());
+    case Qt::NoModifier: // scroll horizontally
+        sv->setWorldX(sv->worldX() - (0.5 * e->angleDelta().y()) / sv->zoom(), CACanorus::settings()->animatedScroll());
         break;
-    case Qt::AltModifier: //scroll horizontally, fast
-        sv->setWorldX(sv->worldX() - e->delta() / sv->zoom(), CACanorus::settings()->animatedScroll());
+
+    case Qt::AltModifier: // scroll horizontally, fast
+        sv->setWorldX(sv->worldX() - e->angleDelta().y() / sv->zoom(), CACanorus::settings()->animatedScroll());
         break;
-    case Qt::ShiftModifier: //scroll vertically
-        sv->setWorldY(sv->worldY() - (0.5 * e->delta()) / sv->zoom(), CACanorus::settings()->animatedScroll());
+
+    case Qt::ShiftModifier: // scroll vertically
+        sv->setWorldY(sv->worldY() - (0.5 * e->angleDelta().y()) / sv->zoom(), CACanorus::settings()->animatedScroll());
         break;
-    case 0x0A000000: //SHIFT+ALT		//scroll vertically, fast
-        sv->setWorldY(sv->worldY() - e->delta() / sv->zoom(), CACanorus::settings()->animatedScroll());
+
+    case 0x0A000000: // SHIFT+ALT scroll vertically fast
+        sv->setWorldY(sv->worldY() - e->angleDelta().y() / sv->zoom(), CACanorus::settings()->animatedScroll());
         break;
-    case Qt::ControlModifier: //zoom
-        if (e->delta() > 0)
+
+    case Qt::ControlModifier: // zoom
+        if (e->angleDelta().y() > 0)
             sv->setZoom(sv->zoom() * 1.1, coords.x(), coords.y(), CACanorus::settings()->animatedScroll());
         else
             sv->setZoom(sv->zoom() / 1.1, coords.x(), coords.y(), CACanorus::settings()->animatedScroll());
-
         break;
     }
-
     sv->repaint();
 }
 

@@ -142,7 +142,7 @@ void CAScoreView::initScoreView(CASheet* sheet)
 
     // init layout
     _layout = new QGridLayout(this);
-    _layout->setMargin(2);
+    _layout->setContentsMargins(2, 2, 2, 2);
     _layout->setSpacing(2);
     _drawBorder = false;
     _grabTabKey = true;
@@ -283,7 +283,7 @@ CAScoreView* CAScoreView::clone(QWidget* parent)
 void CAScoreView::addMElement(CADrawableMusElement* elt, bool select)
 {
     _drawableMList.addElement(elt);
-    _mapDrawable.insertMulti(elt->musElement(), elt);
+    _mapDrawable.insert(elt->musElement(), elt);
     if (select) {
         _selection.clear();
         addToSelection(elt);
@@ -299,7 +299,7 @@ void CAScoreView::addMElement(CADrawableMusElement* elt, bool select)
 void CAScoreView::addCElement(CADrawableContext* elt, bool select)
 {
     _drawableCList.addElement(elt);
-    _mapDrawable.insertMulti(elt->context(), elt);
+    _mapDrawable.insert(elt->context(), elt);
 
     if (select)
         setCurrentContext(elt);
@@ -316,7 +316,7 @@ void CAScoreView::addCElement(CADrawableContext* elt, bool select)
 void CAScoreView::addDrawableNoteCheckerError(CADrawableNoteCheckerError* dnce)
 {
     _drawableNCEList.addElement(dnce);
-    _mapDrawable.insertMulti(nullptr, dnce);
+    _mapDrawable.insert(nullptr, dnce);
 }
 
 /*!
@@ -1413,14 +1413,14 @@ bool CAScoreView::clickTimerActivated()
 */
 void CAScoreView::wheelEvent(QWheelEvent* e)
 {
-    QPoint coords(static_cast<int>(e->x() / _zoom + _worldX), static_cast<int>(e->y() / _zoom + _worldY));
+    QPoint coords(static_cast<int>(e->angleDelta().x() / _zoom + _worldX), static_cast<int>(e->angleDelta().y() / _zoom + _worldY));
 
     emit CAWheelEvent(e, coords);
 
     // Note Reinhard 01/20: Casting to int removed, does not make sense to me (actual cast is done above).
     // Use faster upper, floor, round etc. if needed in that part (as long as worldX is stored in double)
-    _xCursor = (e->x() / _zoom) + _worldX; //TODO: _xCursor and _yCursor are still the old one. Somehow, _zoom level and _worldX/Y are not updated when emmiting CAWheel event. -Matevz
-    _yCursor = (e->y() / _zoom) + _worldY;
+    _xCursor = (e->angleDelta().x() / _zoom) + _worldX; //TODO: _xCursor and _yCursor are still the old one. Somehow, _zoom level and _worldX/Y are not updated when emmiting CAWheel event. -Matevz
+    _yCursor = (e->angleDelta().y() / _zoom) + _worldY;
 }
 
 /*!
@@ -1482,7 +1482,7 @@ void CAScoreView::leaveEvent(QEvent*)
     repaint();
 }
 
-void CAScoreView::enterEvent(QEvent*)
+void CAScoreView::enterEvent(QEnterEvent*)
 {
     _shadowNoteVisible = _shadowNoteVisibleOnLeave;
     repaint();

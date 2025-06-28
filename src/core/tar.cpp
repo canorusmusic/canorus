@@ -191,7 +191,7 @@ bool CATar::addFile(const QString& filename, QIODevice& data, bool replace /* = 
 
     file->hdr.mode = 0644; // file permissions. set read/write for user, read only for everyone else.
     file->hdr.size = static_cast<size_t>(data.size());
-    file->hdr.mtime = QDateTime::currentDateTime().toTime_t(); //FIXME
+    file->hdr.mtime = QDateTime::currentDateTime().toSecsSinceEpoch(); //FIXME - Done
     file->hdr.chksum = 0; // later
     file->hdr.typeflag = '0'; // normal file
     bufncpy(file->hdr.linkname, nullptr, 0, 100);

@@ -162,7 +162,8 @@ CADrawableFunctionMark::CADrawableFunctionMark(CAFunctionMark* function, CADrawa
         }
 
     if (function->isMinor()) { //prepend a small circle
-        _text.prepend(QString(0x02DA));
+        const QString ch = QChar(0x02DA);
+        _text.prepend(ch);
         setWidth(width() + 6);
         setXPos(xPos() - 6);
     }
@@ -471,7 +472,7 @@ void CADrawableFunctionMarkSupport::draw(QPainter* p, const CADrawSettings s)
         }
 
         if (minor)
-            text.prepend(QString(0x02DA));
+            text.prepend(QChar(0x02DA));
     }
 
     p->setPen(QPen(s.color));

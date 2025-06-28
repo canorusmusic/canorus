@@ -141,7 +141,7 @@ CAActionsEditor::CAActionsEditor(QWidget* parent, Qt::WindowFlags f)
     buttonLayout->addWidget(saveButton);
 
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
-    mainLayout->setMargin(8);
+    mainLayout->setContentsMargins(8, 8, 8, 8);
     mainLayout->setSpacing(8);
     mainLayout->addWidget(actionsTable);
     mainLayout->addLayout(buttonLayout);
@@ -192,7 +192,7 @@ void CAActionsEditor::addActions(const QList<CASingleAction*>& actionList)
     for (int n = 0; n < actionList.size(); n++) {
         action = actionList[n];
         //action->getAction()->setParent(this);
-        qWarning() << "CAActionsEditor::addActions - objectName " << action->getAction()->objectName() << " inherits " << action->getAction()->inherits("QWidgetAction") << endl;
+        qWarning() << "CAActionsEditor::addActions - objectName " << action->getAction()->objectName() << " inherits " << action->getAction()->inherits("QWidgetAction") << Qt::endl;
         if (!action->getAction()->objectName().isEmpty() && !action->getAction()->inherits("QWidgetAction"))
             m_actionsList.append(action);
     }
@@ -223,7 +223,7 @@ void CAActionsEditor::updateView()
         //#endif
         description = action->getDescription();
         midi_com = action->getMidiKeySequence();
-        midi_scut = action->getMidiShortCutCombined();
+        midi_scut = action->getMidiShortCutCombined() ? "true" : "false";
 
         QTableWidgetItem* i_conf = new QTableWidgetItem();
 
@@ -491,7 +491,7 @@ bool CAActionsEditor::saveActionsTable(const QString& filename, enum fileType ty
     if (f.open(QIODevice::WriteOnly)) {
         QTextStream stream(&f);
         QString accelText;
-        stream.setCodec("UTF-8");
+        stream.setEncoding(QStringEncoder::Utf8);
 
         // @ToDo: Pretty Format output by adding \t as necessary
         for (int row = 0; row < actionsTable->rowCount(); row++) {
@@ -549,7 +549,7 @@ bool CAActionsEditor::loadActionsTable(const QString& filename, enum fileType ty
         //#endif
 
         QTextStream stream(&f);
-        stream.setCodec("UTF-8");
+        stream.setEncoding(QStringEncoder::Utf8);
 
         QString line;
         QString command, context, accelText, midiText;
@@ -747,7 +747,7 @@ ShortcutGetter::ShortcutGetter(QWidget* parent)
     setWindowTitle(tr("Modify shortcut"));
 
     QVBoxLayout* vbox = new QVBoxLayout(this);
-    vbox->setMargin(2);
+    vbox->setContentsMargins(2, 2, 2, 2);
     vbox->setSpacing(4);
 
     QLabel* l = new QLabel(this);

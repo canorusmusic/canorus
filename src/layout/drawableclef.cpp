@@ -84,13 +84,13 @@ void CADrawableClef::draw(QPainter* p, CADrawSettings s)
 	*/
     switch (clef()->clefType()) {
     case CAClef::G:
-        p->drawText(s.x, qRound(s.y + (clef()->offset() > 0 ? CLEF_EIGHT_SIZE * s.z : 0) + 0.63 * (height() - (clef()->offset() ? CLEF_EIGHT_SIZE : 0)) * s.z), QString(CACanorus::fetaCodepoint("clefs.G")));
+        p->drawText(s.x, qRound(s.y + (clef()->offset() > 0 ? CLEF_EIGHT_SIZE * s.z : 0) + 0.63 * (height() - (clef()->offset() ? CLEF_EIGHT_SIZE : 0)) * s.z), QString(QChar(CACanorus::fetaCodepoint("clefs.G"))));
         break;
     case CAClef::F:
-        p->drawText(s.x, qRound(s.y + (clef()->offset() > 0 ? CLEF_EIGHT_SIZE * s.z : 0) + 0.32 * (height() - (clef()->offset() ? CLEF_EIGHT_SIZE : 0)) * s.z), QString(CACanorus::fetaCodepoint("clefs.F")));
+        p->drawText(s.x, qRound(s.y + (clef()->offset() > 0 ? CLEF_EIGHT_SIZE * s.z : 0) + 0.32 * (height() - (clef()->offset() ? CLEF_EIGHT_SIZE : 0)) * s.z), QString(QChar(CACanorus::fetaCodepoint("clefs.F"))));
         break;
     case CAClef::C:
-        p->drawText(s.x, qRound(s.y + (clef()->offset() > 0 ? CLEF_EIGHT_SIZE * s.z : 0) + 0.5 * (height() - (clef()->offset() ? CLEF_EIGHT_SIZE : 0)) * s.z), QString(CACanorus::fetaCodepoint("clefs.C")));
+        p->drawText(s.x, qRound(s.y + (clef()->offset() > 0 ? CLEF_EIGHT_SIZE * s.z : 0) + 0.5 * (height() - (clef()->offset() ? CLEF_EIGHT_SIZE : 0)) * s.z), QString(QChar(CACanorus::fetaCodepoint("clefs.C"))));
         break;
     case CAClef::Tab:
     case CAClef::PercussionHigh:
