@@ -763,10 +763,10 @@ ADD_DEPENDENCIES(canorus canorus_qm)
 # Dev Install #
 ###############
 IF(${CANORUS_DEV_INSTALL} MATCHES True)
-    ADD_CUSTOM_COMMAND(
-        TARGET canorus
-        POST_BUILD
-        COMMAND ${CMAKE_MAKE_PROGRAM} install
+add_custom_target(devinstall
+        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target install
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+        COMMENT "Running dev install"
     )
 ENDIF(${CANORUS_DEV_INSTALL} MATCHES True)
 

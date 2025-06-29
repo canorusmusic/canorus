@@ -92,7 +92,7 @@ ENDIF(MINGW)
 
 #-----------------------------------------------------------------------------
 # Search for Qt6. We need the latest LTS version of Qt
-SET(QT_MIN_VERSION "6.8.3")
+SET(QT_MIN_VERSION "6.5.5")
 
 # this line includes FindQt.cmake, which searches the Qt library and headers
 FIND_PACKAGE(Qt6Core REQUIRED)

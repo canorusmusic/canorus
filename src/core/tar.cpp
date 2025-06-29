@@ -88,7 +88,7 @@ void CATar::parse(QIODevice& tar)
         // Check magic first
         QByteArray magic = hdrba.mid(257, 6);
         QByteArray version = hdrba.mid(263, 2);
-        if (magic != QString::fromLatin1("ustar") || version[0] != '0' || version[1] != '0') {
+        if (magic != QByteArray("ustar\0",6) || version != QByteArray("00",2)) {
             _ok = false;
             continue;
         }

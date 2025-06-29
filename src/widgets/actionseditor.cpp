@@ -327,20 +327,26 @@ void CAActionsEditor::validateAction(QTableWidgetItem* i)
 
     int iCol = i->column();
     if (iCol == COL_SHORTCUT) {
-        QString accelText = QKeySequence(i->text()).toString();
-
-        if (accelText.isEmpty() && !i->text().isEmpty()) {
-            /*
-			QAction * action = static_cast<QAction*> (actionsList[i->row()]);
-			QString oldAccelText= action->accel().toString();
-			*/
+        QString text = i->text();
+        if (text.isEmpty()) {
+            i->setIcon(QIcon(":/icons/error.png"));  // show error feedback
             i->setText(oldAccelText);
         } else {
-            i->setText(accelText);
+            QString accelText = QKeySequence(text).toString();
+
+            if (accelText.isEmpty() && !i->text().isEmpty()) {
+                /*
+                QAction * action = static_cast<QAction*> (actionsList[i->row()]);
+                QString oldAccelText= action->accel().toString();
+                */
+                i->setText(oldAccelText);
+            } else {
+                i->setText(accelText);
+            }
+            // @ToDo: Only optional beep ?
+            if (hasConflicts())
+                qApp->beep();
         }
-        // @ToDo: Only optional beep ?
-        if (hasConflicts())
-            qApp->beep();
     } else if (iCol == COL_MIDI) {
         QString midiText = i->text();
 
