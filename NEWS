@@ -1,3 +1,88 @@
+0.9.0
+=====
+- Use Qt6 as new base, drop Qt5 (no longer officially supported)
+- Fix warnings related to Qt6 changes
+- Kept deprecation warnings as is since python also shows several
+  deprecation warnings still valid for Ubuntu LTS on Ubuntu latest
+- Increase minimum required Python, gcc, cmake etc.
+- Inofficial support for clang++-18 (Ubuntu latest)
+- Adapt code and both CMakeList.txt to build with Qt6
+- Fix tar magic check issue so .can files can be opened
+- Add extra check for empty text in actions editor (init phase)
+
+0.8.0
+=====
+- Recommended compiler is gcc/mingw 13.2
+- Add support for shift+dblClick to insert syllable or chord
+- Preserve Insert toolbar visibility when in Insert mode
+- Fix syllable alignment when under chord (#209)
+- Python 3.9 fixes (incl. crash)
+- Swig Python: Obtain GIL earlier, force import CanorusPython
+- Search Directories: Find scripts in local build directory
+- mainwinprogressctl: Mainwin should not be owned by progressctl
+- Correct compilation on ubuntu 18.04
+- Layout: Adjust segno, coda, varcoda, dal- spacing
+- Lilypond Export: Add Segno, Coda, VarCorda, Dal-
+- Chord Name: Del clears the chordname, shift+del removes it
+  Mimic the behavior from syllables, function marks and figured bass marks
+- Main Window: Always store name when losing focus
+- Layout: Render placeholder if text/bookmark empty
+- UI: Use double click to enter lyrics/chord mode
+  Single click selects syllable, chord, text or bookmark. Double
+  click shows the edit text widget.
+  Show · symbol for syllables and chords with no value set
+  for easier selection.
+- Print stanza number right before first syllable
+- Chord Name: Fix out-of-bounds transposing
+- Minor cleanup to lily export
+- CMakeLists: Force out-of-source builds
+- Ignore Qt deprecation warnings (warnings as errors)
+  They are still shown, but do not break build anymore
+  This is a temporary workaround until the official
+  support for the new Qt is implemented.
+- Enable console output on Windows (debug: libssp-0.dll)
+- First part of raw pointer removal
+  Replace Raw Pointer with Smart Pointers
+  Adapt API to work with Smart Pointers
+- Python 3.8 Build corrected
+- RtMidi: Fix warning with enum
+- Lilypond Export: Restore Lilypond-2.20 lyrics compatibility
+- Use official SWIG API for proxy classes, update Ruby wrapper
+- Obsolete python threads code removed
+- Midi export: Fix time delimiter value
+- Midi export: Check, if device exists before closing it
+- Midi export: Close export device after flushing
+- Python API: Add acquireGIL() and releaseGIL() helpers
+- Scripting: Fix python3 interface for QString input args
+- Lilypond: Export stanza number
+- Time signature numbers render correctly
+- Call noteChecker when pasting & placing new barline in Main Window
+- Remove sourceview mode instabilities
+- Correct exporting breath sign with other articulation signs on
+  same note to Lilypond
+- ML Import: Rectified midi-channel and some other numeric value import
+- Cured loading and saving of resources in .can format
+- Remember location of the saved file in dialogs when saving
+- PropertiesDialog: Save content while swiching panes
+- Fix -Werror failure due to deprecated Qt functions
+- Correct Tar compilation after warnings fix on raspbian
+- Add "make fmt" target for calling clang-format
+- Cured chord name transpose
+- Code beautifying
+- Use current document's directory for dialogs
+- Add volta example into all features test
+- Translation: Fix build/installation issues
+- Inofficial Clang Compiler support (build enhanced & warnings removed)
+- Editor: Correct note checker not checking when add dot
+- Update translations, add template.ts to codebase, update all
+  translations, add Ukrainian translation
+- ML Import: Rectify incorrect import of foreground color before 0.7.3
+- Mainwin: Use more standard "Go to" and Ctrl+G instead of "Jump to"
+- Add support for chord names
+- Correct invisible textedit for syllables and chord names
+- Add PDF builder to sphinx doc for User's guide
+- Volta brackets do appear in lilypond exports
+
 0.7.3
 =====
 - Translation Updates

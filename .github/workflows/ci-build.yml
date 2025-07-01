@@ -17,12 +17,12 @@ jobs:
       - name: Install Qt
         uses: jurplel/install-qt-action@v3
         with:
-          version: 5.15.2
+          version: 6.8.3
           modules: qtwebengine
 
       - name: Install other deps
         run: |
-          sudo apt install -y cmake libasound2-dev
+          sudo apt install -y ninja-build swig cmake libasound2-dev
 
       - name: CMake (NO_PYTHON=${{ matrix.no_python }})
         run: |
@@ -31,7 +31,7 @@ jobs:
           cmake .. -DCMAKE_INSTALL_PREFIX=~/.local -DNO_PYTHON=${{ matrix.no_python }}
 
       - name: Make
-        working-directory: build
+        working-directory: build    
         run: |
           make -j4
 
