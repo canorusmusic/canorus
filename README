@@ -16,7 +16,7 @@ The latest LTS version of Qt6, Swig and CMake 3 is preferred.
 Canorus requires the current "LTS" version 6.5 or later.
 
 - Qt development package >=6.5.3 (http://www.qt-project.org).
-- Swig >=3.0.8 (http://www.swig.org).
+- Swig >=4.0.2 (http://www.swig.org).
 - g++ >=9, make or ninja.
 - cmake >=3.28.3 (http://www.cmake.org).
 - Python development package >= 3.9 (http://www.python.org)
