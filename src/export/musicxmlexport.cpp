@@ -63,7 +63,7 @@ CAMusicXmlExport::~CAMusicXmlExport()
  */
 void CAMusicXmlExport::exportSheetImpl(CASheet* sheet)
 {
-    out().setCodec("UTF-8");
+    out().setEncoding(QStringConverter::Utf8);
     setCurSheet(sheet);
 
     // we need to check if the document is not set, for example at exporting the first sheet

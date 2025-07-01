@@ -6,7 +6,7 @@
 */
 
 #include <QByteArray>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QString>
 #include <QTemporaryFile>
 #include <zlib.h>
@@ -16,7 +16,6 @@
 #endif
 
 #include "core/archive.h"
-#include "core/tar.h"
 
 /*!
 	\class CAArchive
@@ -29,7 +28,8 @@
 */
 
 const int CAArchive::CHUNK = 16384;
-const QString CAArchive::COMMENT = "Canorus Archive v" + QString(CANORUS_VERSION).remove(QRegExp("[a-z]*$"));
+static const QRegularExpression trailingLetters("[a-z]*$");
+const QString CAArchive::COMMENT = QString(CANORUS_VERSION).remove(trailingLetters);
 
 /*!
 	Creates and empty archive
@@ -131,15 +131,15 @@ void CAArchive::parse(QIODevice& arch)
         _err = true;
 
     if (!_err) {
-        QRegExp re("Canorus Archive v(\\d+\\.\\d+)");
+        static const QRegularExpression re("Canorus Archive v(\\d+\\.\\d+)");
         // The code purposely could cut contents of the array.
         // For strings it would only work with ASCII code nothing else
-        if (re.indexIn(reinterpret_cast<char*>(header.comment)) != -1)
-            _version = re.cap(1);
-        else {
+        QRegularExpressionMatch match = re.match(reinterpret_cast<char*>(header.comment));
+        if (match.hasMatch()) {
+            _version = match.captured(1);
+        } else {
             _err = true;
         }
-
         tar.reset();
         _tar = new CATar(tar);
     }
@@ -179,7 +179,7 @@ qint64 CAArchive::write(QIODevice& dest)
     header.comment = new unsigned char[COMMENT.size() + 1];
     // The code purposely could cut contents of the array.
     // For strings it would only work with ASCII code nothing else
-    strcpy(reinterpret_cast<char*>(header.comment), COMMENT.toLatin1().data());
+    strncpy(reinterpret_cast<char*>(header.comment), COMMENT.toLatin1().data(), COMMENT.toLatin1().size());
 
     in.open(QIODevice::ReadWrite);
     out.open(QIODevice::ReadWrite);

@@ -144,7 +144,7 @@ void CAPlayback::run()
         setStop(false);
 
     int minLength = -1;
-    int mSeconds = 0; // actual song time, used when creating a midi file
+    // int mSeconds = 0; // actual song time, used when creating a midi file
     while (!_stop || _curPlaying.size()) { // at stop true: enter to switch all notes off
         for (int i = 0; i < _curPlaying.size(); i++) {
             if (_stop || _curPlaying[i]->timeEnd() <= _curTime) {
@@ -247,7 +247,7 @@ void CAPlayback::run()
         }
 
         if (minLength != -1) {
-            mSeconds += qRound(minLength * _sleepFactor);
+            // mSeconds += qRound(minLength * _sleepFactor); // Never used
 
             if (midiDevice()->isRealTime())
                 msleep(static_cast<ulong>(qRound(minLength * _sleepFactor)));

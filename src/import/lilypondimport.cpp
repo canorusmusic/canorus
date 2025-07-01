@@ -6,8 +6,9 @@
 */
 
 #include <QFileInfo>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QTextStream>
+#include <QRegularExpression>
 
 #include <iostream> // DEBUG
 
@@ -16,13 +17,14 @@
 #include "score/playable.h"
 #include "score/sheet.h"
 #include "score/slur.h"
+#include "score/timesignature.h"
 
 /*!
 	Delimiters which separate various music elements in LilyPond syntax. These are new lines, tabs, blanks etc.
 
 	\sa nextElement(), parseNextElement()
 */
-const QRegExp CALilyPondImport::WHITESPACE_DELIMITERS = QRegExp("[\\s]");
+const QRegularExpression CALilyPondImport::WHITESPACE_DELIMITERS = QRegularExpression("[\\s]");
 
 /*!
 	Delimiters which separate various music elements in LilyPond syntax, but are specific for LilyPond syntax.
@@ -30,12 +32,12 @@ const QRegExp CALilyPondImport::WHITESPACE_DELIMITERS = QRegExp("[\\s]");
 
 	\sa nextElement(), parseNextElement()
 */
-const QRegExp CALilyPondImport::SYNTAX_DELIMITERS = QRegExp("[<>{}]");
+const QRegularExpression CALilyPondImport::SYNTAX_DELIMITERS = QRegularExpression("[<>{}]");
 
 /*!
 	Combined WHITESPACE_DELIMITERS and SYNTAX_DELIMITERS.
 */
-const QRegExp CALilyPondImport::DELIMITERS = QRegExp(
+const QRegularExpression CALilyPondImport::DELIMITERS = QRegularExpression(
     CALilyPondImport::WHITESPACE_DELIMITERS.pattern().left(CALilyPondImport::WHITESPACE_DELIMITERS.pattern().size() - 1) + CALilyPondImport::SYNTAX_DELIMITERS.pattern().mid(1));
 
 CALilyPondImport::CALilyPondImport(const QString in)
@@ -83,8 +85,9 @@ CASheet* CALilyPondImport::importSheetImpl()
     QFileInfo fi(fileName());
     sheet->setName(fi.baseName());
 
-    (*stream()).setCodec("UTF-8");
-    QString text(*stream()->string());
+    // ToDo: Defensive programming, check stream() pointer
+    stream()->setEncoding(QStringConverter::Utf8); // Avoid pointer dereference
+    QString text = *stream()->string(); // Avoid pointer dereference
 
     // To activate this import code uncomment in src/canorus.cpp this line:
     //CAMainWin::uiImportDialog->setFilters( CAMainWin::uiImportDialog->filters() << CAFileFormats::LILYPOND_FILTER );
@@ -324,7 +327,7 @@ CAVoice* CALilyPondImport::importVoiceImpl()
             // CATimeSignature
             QString timeString = peekNextElement();
             // time signature should have beats/beat format
-            if (timeString.indexOf(QRegExp("\\d+/\\d+")) == -1) {
+            if (timeString.indexOf(QRegularExpression("\\d+/\\d+")) == -1) {
                 addError(QString("Invalid time signature beats format %1. Beat and number of beats should be written <beats>/<beat>.").arg(timeString));
                 continue;
             }
@@ -392,16 +395,16 @@ CALyricsContext* CALilyPondImport::importLyricsContextImpl()
 const QString CALilyPondImport::parseNextElement()
 {
     // find the first non-whitespace character
-    int start = in().indexOf(QRegExp("\\S"));
+    int start = in().indexOf(QRegularExpression("\\S"));
     if (start == -1) {
         start = 0;
     } else if (in().mid(start, 1) == "%") {
         // handle comments
-        start = in().indexOf(QRegExp("[\n\r]"), start);
+        start = in().indexOf(QRegularExpression("[\n\r]"), start);
         if (start == -1) {
             start = in().size();
         } else {
-            start = in().indexOf(QRegExp("\\S"), start);
+            start = in().indexOf(QRegularExpression("\\S"), start);
             if (start == -1) {
                 start = in().size();
             }
@@ -435,16 +438,16 @@ const QString CALilyPondImport::parseNextElement()
 const QString CALilyPondImport::peekNextElement()
 {
     // find the first non-whitespace character
-    int start = in().indexOf(QRegExp("\\S"));
+    int start = in().indexOf(QRegularExpression("\\S"));
     if (start == -1) {
         start = 0;
     } else if (in().mid(start, 1) == "%") {
         // handle comments
-        start = in().indexOf(QRegExp("[\n\r]"), start);
+        start = in().indexOf(QRegularExpression("[\n\r]"), start);
         if (start == -1) {
             start = in().size();
         } else {
-            start = in().indexOf(QRegExp("\\S"), start);
+            start = in().indexOf(QRegularExpression("\\S"), start);
             if (start == -1) {
                 start = in().size();
             }
@@ -504,7 +507,7 @@ CAMusElement* CALilyPondImport::findSharedElement(CAMusElement* elt)
 */
 bool CALilyPondImport::isNote(const QString elt)
 {
-    return QString(elt[0]).contains(QRegExp("[a-g]"));
+    return QString(elt[0]).contains(QRegularExpression("[a-g]"));
 }
 
 /*!
@@ -582,7 +585,7 @@ CAPlayableLength CALilyPondImport::playableLengthFromLilyPond(QString& elt, bool
     CAPlayableLength ret;
 
     // index of the first number
-    int start = elt.indexOf(QRegExp("[\\d]"));
+    int start = elt.indexOf(QRegularExpression("[\\d]"));
     if (start == -1) // no length written
         return ret;
     else { // length written
@@ -595,7 +598,7 @@ CAPlayableLength CALilyPondImport::playableLengthFromLilyPond(QString& elt, bool
             ;
 
         if (dStart == -1)
-            dStart = elt.indexOf(QRegExp("[\\D]"), start);
+            dStart = elt.indexOf(QRegularExpression("[\\D]"), start);
         if (dStart == -1)
             dStart = elt.size();
 
@@ -633,7 +636,7 @@ CAClef::CAPredefinedClefType CALilyPondImport::predefinedClefTypeFromLilyPond(co
 {
     // remove any quotes/double quotes
     QString clef(constClef);
-    clef.remove(QRegExp("[\"']"));
+    clef.remove(QRegularExpression("[\"']"));
 
     if (clef.contains("treble") || clef.contains("violin") || clef.contains("G"))
         return CAClef::Treble;
@@ -670,7 +673,7 @@ int CALilyPondImport::clefOffsetFromLilyPond(const QString constClef)
 {
     // remove any quotes/double quotes
     QString clef(constClef);
-    clef.remove(QRegExp("[\"']"));
+    clef.remove(QRegularExpression("[\"']"));
 
     if (!clef.contains("_") && !clef.contains("^"))
         return 0;
@@ -718,7 +721,7 @@ CABarline::CABarlineType CALilyPondImport::barlineTypeFromLilyPond(QString const
 {
     // remove any quotes/double quotes
     QString barline(constBarline);
-    barline.remove(QRegExp("[\"']"));
+    barline.remove(QRegularExpression("[\"']"));
 
     if (barline == "|")
         return CABarline::Single;

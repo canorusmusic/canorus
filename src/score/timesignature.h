@@ -9,7 +9,6 @@
 #define TIMESIGNATURE_H_
 
 #include <QString>
-
 #include "score/muselement.h"
 #include "score/staff.h"
 

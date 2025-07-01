@@ -276,16 +276,16 @@ void CADrawableMark::draw(QPainter* p, CADrawSettings s)
         int y = qRound(s.y + (inverted ? 0 : (height() * s.z)));
         switch (static_cast<CAFermata*>(mark())->fermataType()) {
         case CAFermata::NormalFermata:
-            p->drawText(x, y, QString(CACanorus::fetaCodepoint("scripts.ufermata") + inverted));
+            p->drawText(x, y, QString(QChar(CACanorus::fetaCodepoint("scripts.ufermata") + inverted)));
             break;
         case CAFermata::ShortFermata:
-            p->drawText(x, y, QString(CACanorus::fetaCodepoint("scripts.ushortfermata") + inverted));
+            p->drawText(x, y, QString(QChar(CACanorus::fetaCodepoint("scripts.ushortfermata") + inverted)));
             break;
         case CAFermata::LongFermata:
-            p->drawText(x, y, QString(CACanorus::fetaCodepoint("scripts.ulongfermata") + inverted));
+            p->drawText(x, y, QString(QChar(CACanorus::fetaCodepoint("scripts.ulongfermata") + inverted)));
             break;
         case CAFermata::VeryLongFermata:
-            p->drawText(x, y, QString(CACanorus::fetaCodepoint("scripts.uverylongfermata") + inverted));
+            p->drawText(x, y, QString(QChar(CACanorus::fetaCodepoint("scripts.uverylongfermata") + inverted)));
             break;
         }
         break;
@@ -334,15 +334,15 @@ void CADrawableMark::draw(QPainter* p, CADrawSettings s)
         switch (r->repeatMarkType()) {
         case CARepeatMark::Segno:
         case CARepeatMark::DalSegno:
-            p->drawText(s.x, s.y - qRound(2 * s.z), QString(CACanorus::fetaCodepoint("scripts.segno")));
+            p->drawText(s.x, s.y - qRound(2 * s.z), QString(QChar(CACanorus::fetaCodepoint("scripts.segno"))));
             break;
         case CARepeatMark::Coda:
         case CARepeatMark::DalCoda:
-            p->drawText(s.x, s.y - qRound(2 * s.z), QString(CACanorus::fetaCodepoint("scripts.coda")));
+            p->drawText(s.x, s.y - qRound(2 * s.z), QString(QChar(CACanorus::fetaCodepoint("scripts.coda"))));
             break;
         case CARepeatMark::VarCoda:
         case CARepeatMark::DalVarCoda:
-            p->drawText(s.x, s.y - qRound(2 * s.z), QString(CACanorus::fetaCodepoint("scripts.varcoda")));
+            p->drawText(s.x, s.y - qRound(2 * s.z), QString(QChar(CACanorus::fetaCodepoint("scripts.varcoda"))));
             break;
         case CARepeatMark::Volta:
             break;
@@ -374,8 +374,8 @@ void CADrawableMark::draw(QPainter* p, CADrawSettings s)
         QFont font("Emmentaler");
         font.setPixelSize(qRound(DEFAULT_TEXT_SIZE * 1.6 * s.z));
         p->setFont(font);
-        p->drawText(s.x, s.y + qRound(height() * s.z), QString(CACanorus::fetaCodepoint("pedal.Ped")));
-        p->drawText(s.x + qRound((width() - 10) * s.z), s.y + qRound(height() * s.z), QString(CACanorus::fetaCodepoint("pedal.*")));
+        p->drawText(s.x, s.y + qRound(height() * s.z), QString(QChar(CACanorus::fetaCodepoint("pedal.Ped"))));
+        p->drawText(s.x + qRound((width() - 10) * s.z), s.y + qRound(height() * s.z), QString(QChar(CACanorus::fetaCodepoint("pedal.*"))));
 
         break;
     }
@@ -388,85 +388,85 @@ void CADrawableMark::draw(QPainter* p, CADrawSettings s)
         int y = s.y + qRound(height() * s.z);
         switch (static_cast<CAArticulation*>(mark())->articulationType()) {
         case CAArticulation::Accent:
-            p->drawText(x, y, QString(CACanorus::fetaCodepoint("scripts.sforzato")));
+            p->drawText(x, y, QString(QChar(CACanorus::fetaCodepoint("scripts.sforzato"))));
             break;
         case CAArticulation::Marcato:
-            p->drawText(x, y, QString(CACanorus::fetaCodepoint("scripts.umarcato")));
+            p->drawText(x, y, QString(QChar(CACanorus::fetaCodepoint("scripts.umarcato"))));
             break;
         case CAArticulation::Staccatissimo:
-            p->drawText(x, y, QString(CACanorus::fetaCodepoint("scripts.ustaccatissimo")));
+            p->drawText(x, y, QString(QChar(CACanorus::fetaCodepoint("scripts.ustaccatissimo"))));
             break;
         case CAArticulation::Espressivo:
-            p->drawText(x, y, QString(CACanorus::fetaCodepoint("scripts.espr")));
+            p->drawText(x, y, QString(QChar(CACanorus::fetaCodepoint("scripts.espr"))));
             break;
         case CAArticulation::Staccato:
-            p->drawText(x, y, QString(CACanorus::fetaCodepoint("scripts.staccato")));
+            p->drawText(x, y, QString(QChar(CACanorus::fetaCodepoint("scripts.staccato"))));
             break;
         case CAArticulation::Tenuto:
-            p->drawText(x, y, QString(CACanorus::fetaCodepoint("scripts.tenuto")));
+            p->drawText(x, y, QString(QChar(CACanorus::fetaCodepoint("scripts.tenuto"))));
             break;
         case CAArticulation::Breath:
-            p->drawText(x, y, QString(CACanorus::fetaCodepoint("scripts.rcomma")));
+            p->drawText(x, y, QString(QChar(CACanorus::fetaCodepoint("scripts.rcomma"))));
             break;
         case CAArticulation::Portato:
-            p->drawText(x, y, QString(CACanorus::fetaCodepoint("scripts.uportato")));
+            p->drawText(x, y, QString(QChar(CACanorus::fetaCodepoint("scripts.uportato"))));
             break;
         case CAArticulation::UpBow:
-            p->drawText(x, y, QString(CACanorus::fetaCodepoint("scripts.upbow")));
+            p->drawText(x, y, QString(QChar(CACanorus::fetaCodepoint("scripts.upbow"))));
             break;
         case CAArticulation::DownBow:
-            p->drawText(x, y, QString(CACanorus::fetaCodepoint("scripts.downbow")));
+            p->drawText(x, y, QString(QChar(CACanorus::fetaCodepoint("scripts.downbow"))));
             break;
         case CAArticulation::Flageolet:
-            p->drawText(x, y, QString(CACanorus::fetaCodepoint("scripts.flageolet")));
+            p->drawText(x, y, QString(QChar(CACanorus::fetaCodepoint("scripts.flageolet"))));
             break;
         case CAArticulation::Open:
-            p->drawText(x, y, QString(CACanorus::fetaCodepoint("scripts.open")));
+            p->drawText(x, y, QString(QChar(CACanorus::fetaCodepoint("scripts.open"))));
             break;
         case CAArticulation::Stopped:
-            p->drawText(x, y, QString(CACanorus::fetaCodepoint("scripts.stopped")));
+            p->drawText(x, y, QString(QChar(CACanorus::fetaCodepoint("scripts.stopped"))));
             break;
         case CAArticulation::Turn:
-            p->drawText(x, y, QString(CACanorus::fetaCodepoint("scripts.turn")));
+            p->drawText(x, y, QString(QChar(CACanorus::fetaCodepoint("scripts.turn"))));
             break;
         case CAArticulation::ReverseTurn:
-            p->drawText(x, y, QString(CACanorus::fetaCodepoint("scripts.reverseturn")));
+            p->drawText(x, y, QString(QChar(CACanorus::fetaCodepoint("scripts.reverseturn"))));
             break;
         case CAArticulation::Trill:
-            p->drawText(x, y, QString(CACanorus::fetaCodepoint("scripts.trill")));
+            p->drawText(x, y, QString(QChar(CACanorus::fetaCodepoint("scripts.trill"))));
             break;
         case CAArticulation::Prall:
-            p->drawText(x, y, QString(CACanorus::fetaCodepoint("scripts.prall")));
+            p->drawText(x, y, QString(QChar(CACanorus::fetaCodepoint("scripts.prall"))));
             break;
         case CAArticulation::Mordent:
-            p->drawText(x, y, QString(CACanorus::fetaCodepoint("scripts.mordent")));
+            p->drawText(x, y, QString(QChar(CACanorus::fetaCodepoint("scripts.mordent"))));
             break;
         case CAArticulation::PrallPrall:
-            p->drawText(x, y, QString(CACanorus::fetaCodepoint("scripts.prallprall")));
+            p->drawText(x, y, QString(QChar(CACanorus::fetaCodepoint("scripts.prallprall"))));
             break;
         case CAArticulation::PrallMordent:
-            p->drawText(x, y, QString(CACanorus::fetaCodepoint("scripts.prallmordent")));
+            p->drawText(x, y, QString(QChar(CACanorus::fetaCodepoint("scripts.prallmordent"))));
             break;
         case CAArticulation::UpPrall:
-            p->drawText(x, y, QString(CACanorus::fetaCodepoint("scripts.upprall")));
+            p->drawText(x, y, QString(QChar(CACanorus::fetaCodepoint("scripts.upprall"))));
             break;
         case CAArticulation::DownPrall:
-            p->drawText(x, y, QString(CACanorus::fetaCodepoint("scripts.downprall")));
+            p->drawText(x, y, QString(QChar(CACanorus::fetaCodepoint("scripts.downprall"))));
             break;
         case CAArticulation::UpMordent:
-            p->drawText(x, y, QString(CACanorus::fetaCodepoint("scripts.upmordent")));
+            p->drawText(x, y, QString(QChar(CACanorus::fetaCodepoint("scripts.upmordent"))));
             break;
         case CAArticulation::DownMordent:
-            p->drawText(x, y, QString(CACanorus::fetaCodepoint("scripts.downmordent")));
+            p->drawText(x, y, QString(QChar(CACanorus::fetaCodepoint("scripts.downmordent"))));
             break;
         case CAArticulation::PrallDown:
-            p->drawText(x, y, QString(CACanorus::fetaCodepoint("scripts.pralldown")));
+            p->drawText(x, y, QString(QChar(CACanorus::fetaCodepoint("scripts.pralldown"))));
             break;
         case CAArticulation::PrallUp:
-            p->drawText(x, y, QString(CACanorus::fetaCodepoint("scripts.prallup")));
+            p->drawText(x, y, QString(QChar(CACanorus::fetaCodepoint("scripts.prallup"))));
             break;
         case CAArticulation::LinePrall:
-            p->drawText(x, y, QString(CACanorus::fetaCodepoint("scripts.lineprall")));
+            p->drawText(x, y, QString(QChar(CACanorus::fetaCodepoint("scripts.lineprall"))));
             break;
         case CAArticulation::Undefined:
             fprintf(stderr, "Warning: CADrawableMark::draw - Unhandled A-Type %d", static_cast<CAArticulation*>(mark())->articulationType());
@@ -496,15 +496,15 @@ QString CADrawableMark::fingerListToString(const QList<CAFingering::CAFingerNumb
         if (list[i] > 0 && list[i] < 6)
             text += QString::number(list[i]);
         else if (list[i] == CAFingering::Thumb)
-            text += QString(CACanorus::fetaCodepoint("scripts.thumb"));
+            text += QString(QChar(CACanorus::fetaCodepoint("scripts.thumb")));
         else if (list[i] == CAFingering::LHeel)
-            text += QString(CACanorus::fetaCodepoint("scripts.upedalheel"));
+            text += QString(QChar(CACanorus::fetaCodepoint("scripts.upedalheel")));
         else if (list[i] == CAFingering::RHeel)
-            text += QString(CACanorus::fetaCodepoint("scripts.dpedalheel"));
+            text += QString(QChar(CACanorus::fetaCodepoint("scripts.dpedalheel")));
         else if (list[i] == CAFingering::LToe)
-            text += QString(CACanorus::fetaCodepoint("scripts.upedaltoe"));
+            text += QString(QChar(CACanorus::fetaCodepoint("scripts.upedaltoe")));
         else if (list[i] == CAFingering::RToe)
-            text += QString(CACanorus::fetaCodepoint("scripts.dpedaltoe"));
+            text += QString(QChar(CACanorus::fetaCodepoint("scripts.dpedaltoe")));
     }
 
     return text;

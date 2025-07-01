@@ -170,7 +170,7 @@ QList<QList<CAMidiNote*>> CAMidiImport::importMidiNotes()
 void CAMidiImport::importMidiEvents()
 {
     QByteArray s;
-    s.append(fileName());
+    s.append(fileName().toUtf8());
     pmidi_open_midi_file(s.constData());
     int voiceIndex;
     int res = PMIDI_STATUS_DUMMY;

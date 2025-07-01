@@ -6,9 +6,8 @@
 */
 
 #include <QtDebug>
-
+#include <QObject>
 #include <QPainter>
-#include <iostream>
 
 #include "score/note.h"
 #include "score/rest.h" // used for voice synchronization
@@ -462,7 +461,7 @@ bool CAStaff::synchronizeVoices()
                     if (restList.size()) {
                         plastPlayable[i] = restList.last();
                     } else {
-                        qDebug() << "Error in CAStaff::synchronizeVoices(): Cannot compose rests of length" << gapLength << endl;
+                        qDebug() << "Error in CAStaff::synchronizeVoices(): Cannot compose rests of length" << gapLength << Qt::endl;
                     }
 
                     changesMade = true;
@@ -483,7 +482,7 @@ bool CAStaff::synchronizeVoices()
                 if (restList.size()) {
                     plastPlayable[j] = restList.last();
                 } else {
-                    qDebug() << "Error in CAStaff::synchronizeVoices(): Cannot compose rests of length" << gapLength << endl;
+                    qDebug() << "Error in CAStaff::synchronizeVoices(): Cannot compose rests of length" << gapLength << Qt::endl;
                 }
                 changesMade = true;
             }

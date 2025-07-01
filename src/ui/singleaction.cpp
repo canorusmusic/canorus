@@ -6,6 +6,7 @@
 */
 
 #include <QString>
+#include <qfont.h>
 
 #include "singleaction.h"
 

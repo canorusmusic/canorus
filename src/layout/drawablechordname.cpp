@@ -27,13 +27,13 @@ CADrawableChordName::CADrawableChordName(CAChordName* s, CADrawableChordNameCont
     QFontMetricsF fm(font);
     qreal textWidth;
     if (!drawableDiatonicPitch().isEmpty()) {
-        textWidth = fm.width(drawableDiatonicPitch());
+        textWidth = fm.horizontalAdvance(drawableDiatonicPitch());
         font.setPixelSize(qRound(DEFAULT_TEXT_SIZE * 0.75));
         fm = QFontMetricsF(font);
-        textWidth += fm.width(chordName()->qualityModifier());
+        textWidth += fm.horizontalAdvance(chordName()->qualityModifier());
     } else {
         // syntax error, print qualityModifier() which includes everything
-        textWidth = fm.width(chordName()->qualityModifier());
+        textWidth = fm.horizontalAdvance(chordName()->qualityModifier());
     }
     setWidth(textWidth < 11 ? 11 : textWidth); // set minimum text width at least 11 points
 
@@ -62,7 +62,7 @@ void CADrawableChordName::draw(QPainter* p, const CADrawSettings s)
 
     p->drawText(s.x, s.y + qRound(height() * s.z), dChordPitch);
     QFontMetricsF fm(font);
-    qreal w = fm.width(dChordPitch);
+    qreal w = fm.horizontalAdvance(dChordPitch);
 
     font.setPixelSize(qRound(DEFAULT_TEXT_SIZE * s.z * 0.75));
     p->setFont(font);

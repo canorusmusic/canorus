@@ -1,3 +1,5 @@
+# Don't build anything unless the version of CMake is high enough.
+cmake_minimum_required(VERSION 3.28.3)
 # The name of our project is "Canorus".  CMakeLists files in this project can
 # refer to the root source directory of the project as ${CANORUS_SOURCE_DIR}
 # and to the root binary directory of the project as ${CANORUS_BINARY_DIR}.
@@ -21,9 +23,6 @@ if (CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
   message(FATAL_ERROR "Build directory and source directory must not be the same.\nDo something like this:\nmkdir build; cd build; cmake ..")
 endif (CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
 
-# Don't build anything unless the version of CMake is high enough.
-cmake_minimum_required(VERSION 2.6)
-
 # Disable ruby support by default
 SET(NO_RUBY 1)
 
@@ -42,7 +41,7 @@ IF(MINGW)
 	STRING(REGEX REPLACE "\\\\" "/" MINGW_BIN_DIR "${MINGW_BIN_DIR}") # Replace back slashes to slashes
 ENDIF(MINGW)
 
-# Set Qt5 bin dir to find QtCore5.dll and other libs to install
+# Set Qt6 bin dir to find QtCore6.dll and other libs to install
 STRING(REGEX REPLACE "([^ ]+)[/\\].*" "\\1" QT_BIN_DIR "${QT_QMAKE_EXECUTABLE}")
 STRING(REGEX REPLACE "\\\\" "/" QT_BIN_DIR "${QT_BIN_DIR}")  # Replace back slashes to slashes
 
@@ -92,19 +91,20 @@ ENDIF(APPLE)
 ENDIF(MINGW)
 
 #-----------------------------------------------------------------------------
-# Search for Qt5. We need the latest version of Qt
-SET(QT_MIN_VERSION "5.2.1")
+# Search for Qt6. We need the latest LTS version of Qt
+SET(QT_MIN_VERSION "6.5.5")
 
 # this line includes FindQt.cmake, which searches the Qt library and headers
-FIND_PACKAGE(Qt5Core REQUIRED)
-FIND_PACKAGE(Qt5Gui REQUIRED)
-FIND_PACKAGE(Qt5Svg REQUIRED)
-FIND_PACKAGE(Qt5Widgets REQUIRED)
-FIND_PACKAGE(Qt5LinguistTools REQUIRED)
-FIND_PACKAGE(Qt5Xml REQUIRED)
-FIND_PACKAGE(Qt5Help REQUIRED)
-FIND_PACKAGE(Qt5PrintSupport REQUIRED)
-FIND_PACKAGE(Qt5WebEngineWidgets)
+FIND_PACKAGE(Qt6Core REQUIRED)
+FIND_PACKAGE(Qt6Gui REQUIRED)
+FIND_PACKAGE(Qt6Svg REQUIRED)
+FIND_PACKAGE(Qt6Widgets REQUIRED)
+FIND_PACKAGE(Qt6LinguistTools REQUIRED)
+FIND_PACKAGE(Qt6Xml REQUIRED)
+FIND_PACKAGE(Qt6Help REQUIRED)
+FIND_PACKAGE(Qt6PrintSupport REQUIRED)
+FIND_PACKAGE(Qt6WebEngineWidgets)
+find_package(Qt6Core5Compat REQUIRED) # Temporary until refactored
 
 # in the following lines all the requires include directories are added
 INCLUDE_DIRECTORIES(src)

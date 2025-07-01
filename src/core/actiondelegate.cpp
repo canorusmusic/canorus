@@ -58,7 +58,7 @@ void CAActionDelegate::addWinActions(QWidget& widget)
     qWarning() << "Delegate: Adding " << actionList.size() << " actions ";
     QAction* actionEntry;
     foreach (actionEntry, actionList) {
-        qWarning("Adding new action %s to shortcut list of size %d", actionEntry->text().toLatin1().constData(), widget.actions().size());
+        qWarning("Adding new action %s to shortcut list of size %ld", actionEntry->text().toLatin1().constData(), static_cast<qint64>(widget.actions().size()));
         addSingleAction(actionEntry->text(), actionEntry->toolTip(), *actionEntry);
     }
 }

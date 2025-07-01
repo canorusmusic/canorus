@@ -10,6 +10,7 @@
 
 #include <QAction>
 #include <QString>
+#include <QWidget>
 
 // Helper class to reduce code ballast in mainwin class
 // Action instances from childs in CAMainWin are stored here for access

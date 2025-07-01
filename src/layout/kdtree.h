@@ -83,14 +83,14 @@ CAKDTree<T>::CAKDTree()
 template <typename T>
 void CAKDTree<T>::addElement(T elt)
 {
-    _mapX.insertMulti(elt->xPos(), elt);
+    _mapX.insert(elt->xPos(), elt);
 
     if (elt->width()) {
         // regular music element
-        _mapXW.insertMulti(elt->xPos() + elt->width(), elt);
+        _mapXW.insert(elt->xPos() + elt->width(), elt);
     } else {
         // music element with unlimited width (e.g. staffs)
-        _mapXW.insertMulti(std::numeric_limits<double>::max(), elt);
+        _mapXW.insert(std::numeric_limits<double>::max(), elt);
     }
 
     if (elt->yPos() + elt->height() > _maxY) {

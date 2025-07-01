@@ -61,9 +61,9 @@ private:
 
     void initMidiImport();
 
-    static const QRegExp WHITESPACE_DELIMITERS;
-    static const QRegExp SYNTAX_DELIMITERS;
-    static const QRegExp DELIMITERS;
+    static const QRegularExpression WHITESPACE_DELIMITERS;
+    static const QRegularExpression SYNTAX_DELIMITERS;
+    static const QRegularExpression DELIMITERS;
 
     // Internal time signature
     struct CATime {

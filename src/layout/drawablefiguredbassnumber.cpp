@@ -41,15 +41,15 @@ void CADrawableFiguredBassNumber::draw(QPainter* p, const CADrawSettings s)
     QString accs;
     if (figuredBassMark()->accs().contains(_number)) {
         if (figuredBassMark()->accs()[_number] == -2) {
-            accs += QString(CACanorus::fetaCodepoint("accidentals.flatflat"));
+            accs += QString(QChar(CACanorus::fetaCodepoint("accidentals.flatflat")));
         } else if (figuredBassMark()->accs()[_number] == -1) {
-            accs += QString(CACanorus::fetaCodepoint("accidentals.flat"));
+            accs += QString(QChar(CACanorus::fetaCodepoint("accidentals.flat")));
         } else if (figuredBassMark()->accs()[_number] == 0) {
-            accs += QString(CACanorus::fetaCodepoint("accidentals.natural"));
+            accs += QString(QChar(CACanorus::fetaCodepoint("accidentals.natural")));
         } else if (figuredBassMark()->accs()[_number] == 1) {
-            accs += QString(CACanorus::fetaCodepoint("accidentals.sharp"));
+            accs += QString(QChar(CACanorus::fetaCodepoint("accidentals.sharp")));
         } else if (figuredBassMark()->accs()[_number] == 2) {
-            accs += QString(CACanorus::fetaCodepoint("accidentals.doublesharp"));
+            accs += QString(QChar(CACanorus::fetaCodepoint("accidentals.doublesharp")));
         }
     }
 

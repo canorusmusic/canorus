@@ -172,9 +172,9 @@ PyObject* CASwigPython::callFunction(QString fileName, QString function, QList<P
     // Call the actual function
     PyObject* ret;
     if (args.size())
-        ret = PyEval_CallObject(pyFunction, pyArgs);
+        ret = PyObject_CallObject(pyFunction, pyArgs);
     else
-        ret = PyEval_CallObject(pyFunction, nullptr);
+        ret = PyObject_CallObject(pyFunction, nullptr);
     if (PyErr_Occurred()) {
         PyErr_Print();
         PyEval_ReleaseThread(mainThreadState);
@@ -242,7 +242,7 @@ void* CASwigPython::callPycli(void*)
     // Call the actual function
     //
     PyObject* ret;
-    ret = PyEval_CallObject(pyFunction, pyArgs);
+    ret = PyObject_CallObject(pyFunction, pyArgs);
     if (PyErr_Occurred()) {
         PyErr_Print();
         PyEval_ReleaseThread(mainThreadState);
