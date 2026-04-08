@@ -628,7 +628,7 @@ void CALilyPondExport::exportLyricsContextImpl(CALyricsContext* lc)
 	Exports the chord names in form:
 	\code
 	ChordNamesOne = \\chordmode {
-		c2 f4:m cis:sus4
+        c2 f4:m cis:sus4/b
 	}
 	\endcode
 */
@@ -669,6 +669,9 @@ void CALilyPondExport::exportChordNameContextImpl(CAChordNameContext* cnc)
                 out() << CADiatonicPitch::diatonicPitchToString(cn->diatonicPitch()) << playableLengthToLilyPond(pl[0]);
                 if (!cn->qualityModifier().isEmpty()) {
                     out() << ":" << cn->qualityModifier();
+                }
+                if (cn->bassNote() != CADiatonicPitch::Undefined) {
+                    out() << "/" << CADiatonicPitch::diatonicPitchToString(cn->bassNote());
                 }
             } else {
                 // diatonicPitch is Undefined - either chord name is empty or a syntax error.

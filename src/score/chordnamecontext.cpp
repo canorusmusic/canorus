@@ -57,7 +57,7 @@ CAMusElement* CAChordNameContext::insertEmptyElement(int timeStart)
     int i;
     for (i = 0; i < _chordNameList.size() && _chordNameList[i]->timeStart() < timeStart; i++)
         ;
-    CAChordName *newChord = new CAChordName(CADiatonicPitch::Undefined, "", this, timeStart, 1);
+    CAChordName *newChord = new CAChordName(CADiatonicPitch::Undefined, "", CADiatonicPitch::Undefined, this, timeStart, 1);
     _chordNameList.insert(i, newChord);
     for (i++; i < _chordNameList.size(); i++)
         _chordNameList[i]->setTimeStart(_chordNameList[i]->timeStart() + 1);

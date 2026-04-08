@@ -33,6 +33,7 @@ private:
     void exportMarks(CAMusElement* associatedElt, QDomElement& domParent);
     void exportPlayableLength(CAPlayableLength l, QDomElement& domParent);
     void exportDiatonicPitch(CADiatonicPitch p, QDomElement& domParent);
+    void exportBassNote(CADiatonicPitch p, QDomElement& domParent);
     void exportDiatonicKey(CADiatonicKey k, QDomElement& domParent);
     void exportColor(CAMusElement* elt, QDomElement& domParent);
     void exportTime(CAMusElement* elt, QDomElement& domParent);
