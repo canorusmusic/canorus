@@ -1801,6 +1801,9 @@ CATextEdit* CAScoreView::createTextEdit(CADrawableMusElement* dMusElt)
                 text += QString(":") + cn->qualityModifier();
             }
         }
+        if (cn->bassNote() != CADiatonicPitch::Undefined) {
+            text += '/' + CADiatonicPitch::diatonicPitchToString(cn->bassNote());
+        }
 
         break;
     }

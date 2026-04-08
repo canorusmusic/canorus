@@ -16,7 +16,7 @@ class CAChordNameContext;
 
 class CAChordName : public CAMusElement {
 public:
-    CAChordName(CADiatonicPitch pitch, QString qualityModifier, CAChordNameContext* parent, int timeStart, int timeLength);
+    CAChordName(CADiatonicPitch pitch, QString qualityModifier, CADiatonicPitch bassNote, CAChordNameContext* parent, int timeStart, int timeLength);
     virtual ~CAChordName();
     void clear();
 
@@ -28,6 +28,9 @@ public:
     QString qualityModifier() { return _qualityModifier; }
     void setQualityModifier(QString qm) { _qualityModifier = qm; }
 
+    CADiatonicPitch bassNote() { return _bassNote; }
+    void setBassNote(CADiatonicPitch bn) { _bassNote = bn; }
+
     CAChordName* clone(CAContext* c);
     int compare(CAMusElement* elt);
 
@@ -36,6 +39,7 @@ public:
 private:
     CADiatonicPitch _diatonicPitch;
     QString _qualityModifier;
+    CADiatonicPitch _bassNote;
 };
 
 #endif /* CHORDNAME_H_ */

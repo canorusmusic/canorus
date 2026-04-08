@@ -79,6 +79,7 @@ private:
     CATuplet* _curTuplet;
     CASlur* _curPhrasingSlur;
     CADiatonicPitch _curDiatonicPitch;
+    CADiatonicPitch _curBassNote;
     CADiatonicKey _curDiatonicKey;
     CAPlayableLength _curPlayableLength;
     CAPlayableLength _curTempoPlayableLength;

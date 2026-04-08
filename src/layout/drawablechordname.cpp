@@ -26,8 +26,11 @@ CADrawableChordName::CADrawableChordName(CAChordName* s, CADrawableChordNameCont
     font.setPixelSize(qRound(DEFAULT_TEXT_SIZE));
     QFontMetricsF fm(font);
     qreal textWidth;
-    if (!drawableDiatonicPitch().isEmpty()) {
-        textWidth = fm.width(drawableDiatonicPitch());
+    if (!drawableDiatonicPitch(chordName()->diatonicPitch()).isEmpty()) {
+        textWidth = fm.width(drawableDiatonicPitch(chordName()->diatonicPitch()));
+        if (chordName()->bassNote() != CADiatonicPitch::Undefined) {
+            textWidth += fm.width('/'+drawableDiatonicPitch(chordName()->bassNote()));
+        }
         font.setPixelSize(qRound(DEFAULT_TEXT_SIZE * 0.75));
         fm = QFontMetricsF(font);
         textWidth += fm.width(chordName()->qualityModifier());
@@ -53,7 +56,7 @@ void CADrawableChordName::draw(QPainter* p, const CADrawSettings s)
     QFont font("Century Schoolbook L");
     font.setPixelSize(qRound(DEFAULT_TEXT_SIZE * s.z));
     p->setFont(font);
-    QString dChordPitch = drawableDiatonicPitch();
+    QString dChordPitch = drawableDiatonicPitch(chordName()->diatonicPitch());
     if (dChordPitch.isEmpty()) {
         // syntax error, print qualityModifier() which includes everything
         p->drawText(s.x, s.y + qRound(height() * s.z), chordName()->qualityModifier());
@@ -67,6 +70,16 @@ void CADrawableChordName::draw(QPainter* p, const CADrawSettings s)
     font.setPixelSize(qRound(DEFAULT_TEXT_SIZE * s.z * 0.75));
     p->setFont(font);
     p->drawText(s.x + w, s.y + qRound(height() * s.z * 0.5), chordName()->qualityModifier());
+
+    if (chordName()->bassNote() != CADiatonicPitch::Undefined) {
+        QString dBassNote = drawableDiatonicPitch(chordName()->bassNote());
+        QFontMetricsF fmm(font);
+        qreal wm = w + fmm.width(chordName()->qualityModifier());
+
+        font.setPixelSize(qRound(DEFAULT_TEXT_SIZE * s.z));
+        p->setFont(font);
+        p->drawText(s.x + wm, s.y + qRound(height() * s.z), '/'+dBassNote);
+    }
 }
 
 CADrawableChordName* CADrawableChordName::clone(CADrawableContext* c)
@@ -82,9 +95,9 @@ CADrawableChordName* CADrawableChordName::clone(CADrawableContext* c)
  * \brief Converts CADiatonicPitch to a chord-style pitch, e.g. "cis" -> "C#"
  * \return Chord-style pitch as QString
  */
-QString CADrawableChordName::drawableDiatonicPitch()
+QString CADrawableChordName::drawableDiatonicPitch(CADiatonicPitch dp)
 {
-    QString chordPitch = CADiatonicPitch::diatonicPitchToString(chordName()->diatonicPitch());
+    QString chordPitch = CADiatonicPitch::diatonicPitchToString(dp);
     if (chordPitch.isEmpty()) {
         return CADrawableMusElement::EMPTY_PLACEHOLDER;
     }
@@ -92,10 +105,10 @@ QString CADrawableChordName::drawableDiatonicPitch()
     chordPitch = chordPitch[0].toUpper(); // chord-style pitch is upper case
 
     // now add sharps or flats
-    if (chordName()->diatonicPitch().accs() < 0) {
-        chordPitch += QString("b").repeated(chordName()->diatonicPitch().accs() * (-1));
-    } else if (chordName()->diatonicPitch().accs() > 0) {
-        chordPitch += QString("#").repeated(chordName()->diatonicPitch().accs());
+    if (dp.accs() < 0) {
+        chordPitch += QString("b").repeated(dp.accs() * (-1));
+    } else if (dp.accs() > 0) {
+        chordPitch += QString("#").repeated(dp.accs());
     }
     return chordPitch;
 }

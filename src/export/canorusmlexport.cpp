@@ -221,6 +221,7 @@ void CACanorusMLExport::exportDocumentImpl(CADocument* doc)
                     dCn.setAttribute("time-length", elts[i]->timeLength());
                     exportDiatonicPitch(elts[i]->diatonicPitch(), dCn);
                     dCn.setAttribute("quality-modifier", elts[i]->qualityModifier());
+                    exportBassNote(elts[i]->bassNote(), dCn);
                 }
                 break;
             }
@@ -531,6 +532,14 @@ void CACanorusMLExport::exportPlayableLength(CAPlayableLength l, QDomElement& do
 void CACanorusMLExport::exportDiatonicPitch(CADiatonicPitch p, QDomElement& domParent)
 {
     QDomElement dp = domParent.ownerDocument().createElement("diatonic-pitch");
+    domParent.appendChild(dp);
+    dp.setAttribute("note-name", p.noteName());
+    dp.setAttribute("accs", p.accs());
+}
+
+void CACanorusMLExport::exportBassNote(CADiatonicPitch p, QDomElement& domParent)
+{
+    QDomElement dp = domParent.ownerDocument().createElement("bass-note");
     domParent.appendChild(dp);
     dp.setAttribute("note-name", p.noteName());
     dp.setAttribute("accs", p.accs());

@@ -505,6 +505,7 @@ bool CACanorusMLImport::startElement(const QString&, const QString&, const QStri
         CAChordName* cn = new CAChordName(
             CADiatonicPitch(),
             attributes.value("quality-modifier"),
+            CADiatonicPitch(),
             static_cast<CAChordNameContext*>(_curContext),
             attributes.value("time-start").toInt(),
             attributes.value("time-length").toInt());
@@ -524,6 +525,8 @@ bool CACanorusMLImport::startElement(const QString&, const QString&, const QStri
         }
     } else if (qName == "diatonic-pitch") {
         _curDiatonicPitch = CADiatonicPitch(attributes.value("note-name").toInt(), attributes.value("accs").toInt());
+    } else if (qName == "bass-note") {
+        _curBassNote = CADiatonicPitch(attributes.value("note-name").toInt(), attributes.value("accs").toInt());
     } else if (qName == "diatonic-key") {
         _curDiatonicKey = CADiatonicKey(CADiatonicPitch(), CADiatonicKey::genderFromString(attributes.value("gender")));
     } else if (qName == "resource") {
@@ -744,6 +747,7 @@ bool CACanorusMLImport::endElement(const QString&, const QString&, const QString
     } else if (qName == "chord-name") {
         CAChordName* cn = static_cast<CAChordName*>(_curMusElt);
         cn->setDiatonicPitch(_curDiatonicPitch);
+        cn->setBassNote(_curBassNote);
         static_cast<CAChordNameContext*>(_curContext)->addChordName(cn);
     }
 
