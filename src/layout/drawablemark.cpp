@@ -360,9 +360,17 @@ void CADrawableMark::draw(QPainter* p, CADrawSettings s)
         break;
     }
     case CAMark::Fingering: {
-        QFont font("Emmentaler");
         CAFingering* f = static_cast<CAFingering*>(mark());
-        font.setPixelSize(f->fingerList()[0] > 5 ? qRound(DEFAULT_TEXT_SIZE * 2 * s.z) : qRound(DEFAULT_TEXT_SIZE * 1.3 * s.z));
+        QFont font;
+        if (f->fingerList()[0] < CAFingering::P || f->fingerList()[0] > CAFingering::X) {
+            font = QFont("Emmentaler");
+            font.setPixelSize(f->fingerList()[0] > 5 ? qRound(DEFAULT_TEXT_SIZE * 2 * s.z) : qRound(DEFAULT_TEXT_SIZE * 1.3 * s.z));
+        } else {
+            // Guitar fingering
+            font = QFont("Century Schoolbook L");
+            font.setPixelSize(qRound(DEFAULT_TEXT_SIZE * 0.9 * s.z));
+        }
+
         font.setItalic(static_cast<CAFingering*>(mark())->isOriginal());
         p->setFont(font);
         QString text = fingerListToString(static_cast<CAFingering*>(mark())->fingerList());
@@ -505,6 +513,8 @@ QString CADrawableMark::fingerListToString(const QList<CAFingering::CAFingerNumb
             text += QString(CACanorus::fetaCodepoint("scripts.upedaltoe"));
         else if (list[i] == CAFingering::RToe)
             text += QString(CACanorus::fetaCodepoint("scripts.dpedaltoe"));
+        else if (list[i] >= CAFingering::P && list[i] <= CAFingering::X)
+            text += QString(CAFingering::fingerNumberToString(list[i]).toLower());
     }
 
     return text;
