@@ -1,8 +1,11 @@
-For a detailed list of planned features for the next version see 
-the wiki pages http://www.canorus.org/wiki/index.php/Main_Page.
+For a detailed list of planned features for the next version see
+the wiki pages https://github.com/canorusmusic/canorus/wiki.
 
 Requested Features:
-https://sourceforge.net/p/canorus/feature-requests/
+https://github.com/canorusmusic/canorus/labels/enhancement
 
 Planned Features: (currently there is no roadmap)
-
+- Switch to Qt6, drop Qt5
+- Remove Swig as scripting host
+- Add Lua as scripting Language
+- Add more music elements
